@@ -14,13 +14,13 @@ package lexicon;
  * to get the Variable associated with the lexical item
  */
 public class TypeRaisedCategory {
-	public Category cat;
-	public byte lexVar; // variable associated with lexical item
-	public byte depVar; // variable for any dependency in the original category
+    public Category cat;
+    public byte lexVar; // variable associated with lexical item
+    public byte depVar; // variable for any dependency in the original category
 
-	public TypeRaisedCategory(Category cat, byte lexVar, byte depVar) {
-		this.cat = cat;
-		this.lexVar = lexVar;
-		this.depVar = depVar;
-	}
+    public TypeRaisedCategory(Category cat, byte lexVar, byte depVar) {
+        this.cat = cat;
+        this.lexVar = lexVar;
+        this.depVar = depVar;
+    }
 }

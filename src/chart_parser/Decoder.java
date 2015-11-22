@@ -11,87 +11,87 @@ import cat_combination.FilledDependency;
 import cat_combination.SuperCategory;
 
 public abstract class Decoder {
-	HashSet<FilledDependency> parserDeps;
+    HashSet<FilledDependency> parserDeps;
 
-	public int numParserDeps() {
-		return parserDeps.size();
-	}
+    public int numParserDeps() {
+        return parserDeps.size();
+    }
 
-	public abstract boolean decode(Chart chart, Sentence sentence);
+    public abstract boolean decode(Chart chart, Sentence sentence);
 
-	protected abstract void bestEquiv(SuperCategory superCat);
+    protected abstract void bestEquiv(SuperCategory superCat);
 
-	protected abstract double bestScore(SuperCategory superCat);
+    protected abstract double bestScore(SuperCategory superCat);
 
-	/*
-	 * finds the dependencies on a best-scoring parse; assumes we've already run
-	 * decode
-	 */
-	protected boolean getParserDeps(Chart chart, Sentence sentence) {
-		parserDeps.clear();
-		Cell root = chart.root();
+    /*
+     * finds the dependencies on a best-scoring parse; assumes we've already run
+     * decode
+     */
+    protected boolean getParserDeps(Chart chart, Sentence sentence) {
+        parserDeps.clear();
+        Cell root = chart.root();
 
-		double maxScore = Double.NEGATIVE_INFINITY;
-		SuperCategory maxRoot = null;
+        double maxScore = Double.NEGATIVE_INFINITY;
+        SuperCategory maxRoot = null;
 
-		for (SuperCategory superCat : root.getSuperCategories()) {
-			double currentScore = superCat.maxEquivScore;
-			if (currentScore > maxScore) {
-				maxScore = currentScore;
-				maxRoot = superCat.maxEquivSuperCat;
-			}
-		}
+        for (SuperCategory superCat : root.getSuperCategories()) {
+            double currentScore = superCat.maxEquivScore;
+            if (currentScore > maxScore) {
+                maxScore = currentScore;
+                maxRoot = superCat.maxEquivSuperCat;
+            }
+        }
 
-		if (maxRoot == null) {
-			System.out.println("No best!\n");
-			return false;
-		}
+        if (maxRoot == null) {
+            System.out.println("No best!\n");
+            return false;
+        }
 
-		getDeps(maxRoot, sentence);
+        getDeps(maxRoot, sentence);
 
-		return true;
-	}
+        return true;
+    }
 
-	protected void getDeps(SuperCategory superCat, Sentence sentence) {
-		if (superCat.leftChild != null) {
-			/*
+    protected void getDeps(SuperCategory superCat, Sentence sentence) {
+        if (superCat.leftChild != null) {
+            /*
 			 * System.out.println("left: "); superCat.leftChild.cat.print();
 			 * System.out.println();
 			 */
-			getEquivDeps(superCat.leftChild, sentence);
+            getEquivDeps(superCat.leftChild, sentence);
 
-			if (superCat.rightChild != null) {
+            if (superCat.rightChild != null) {
 				/*
 				 * System.out.println("right: ");
 				 * superCat.rightChild.cat.print(); System.out.println();
 				 */
-				getEquivDeps(superCat.rightChild, sentence);
-			}
-		} else {
-			sentence.addOutputSupertag(superCat.cat);
-		}
+                getEquivDeps(superCat.rightChild, sentence);
+            }
+        } else {
+            sentence.addOutputSupertag(superCat.cat);
+        }
 
-		for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
-			parserDeps.add(filled);
-		}
-	}
+        for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
+            parserDeps.add(filled);
+        }
+    }
 
-	protected void getEquivDeps(SuperCategory superCat, Sentence sentence) {
-		SuperCategory bestEquivSuperCat = superCat.maxEquivSuperCat;
+    protected void getEquivDeps(SuperCategory superCat, Sentence sentence) {
+        SuperCategory bestEquivSuperCat = superCat.maxEquivSuperCat;
 
-		if (bestEquivSuperCat == null) {
-			throw new Error("should always have a maxEquivSuperCat!");
-		}
+        if (bestEquivSuperCat == null) {
+            throw new Error("should always have a maxEquivSuperCat!");
+        }
 
-		getDeps(bestEquivSuperCat, sentence);
-	}
+        getDeps(bestEquivSuperCat, sentence);
+    }
 
-	public void print(PrintWriter out, Relations relations, Sentence sentence) {
-		Iterator<FilledDependency> iterator = parserDeps.iterator();
+    public void print(PrintWriter out, Relations relations, Sentence sentence) {
+        Iterator<FilledDependency> iterator = parserDeps.iterator();
 
-		while (iterator.hasNext()) {
-			FilledDependency parserDep = iterator.next();
-			parserDep.printFullJslot(out, relations, sentence);
-		}
-	}
+        while (iterator.hasNext()) {
+            FilledDependency parserDep = iterator.next();
+            parserDep.printFullJslot(out, relations, sentence);
+        }
+    }
 }

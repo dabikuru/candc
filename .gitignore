@@ -22,4 +22,5 @@ parsebeam
 trainbeam
 
 .idea
+*.iml
 .DS_Store

@@ -7,46 +7,46 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Weights {
-	double[] weights;
+    double[] weights;
 
-	public Weights() {
-	}
+    public Weights() {
+    }
 
-	public Weights(String weightsFile, int numFeatures) throws IOException {
-		this.weights = new double[numFeatures];
+    public Weights(String weightsFile, int numFeatures) throws IOException {
+        this.weights = new double[numFeatures];
 
-		if (!weightsFile.equals("zero")) {
-			readWeights(weightsFile);
-		}
-	}
+        if (!weightsFile.equals("zero")) {
+            readWeights(weightsFile);
+        }
+    }
 
-	public void setWeights(double[] weights) {
-		this.weights = weights;
-	}
+    public void setWeights(double[] weights) {
+        this.weights = weights;
+    }
 
-	private void readWeights(String weightsFile) throws IOException {
-		int ID = 0;
+    private void readWeights(String weightsFile) throws IOException {
+        int ID = 0;
 
-		BufferedReader in = new BufferedReader(new FileReader(weightsFile));
-		Preface.readPreface(in);
+        BufferedReader in = new BufferedReader(new FileReader(weightsFile));
+        Preface.readPreface(in);
 
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			double weight = Double.valueOf(line);
-			weights[ID] = weight;
-			ID++;
-		}
+        String line = null;
+        while ((line = in.readLine()) != null) {
+            double weight = Double.valueOf(line);
+            weights[ID] = weight;
+            ID++;
+        }
 
-		if (ID != weights.length) {
-			throw new IllegalArgumentException("number of weights != number of features!");
-		}
-	}
+        if (ID != weights.length) {
+            throw new IllegalArgumentException("number of weights != number of features!");
+        }
+    }
 
-	public double getWeight(int ID) {
-		return weights[ID];
-	}
+    public double getWeight(int ID) {
+        return weights[ID];
+    }
 
-	public void setWeight(int ID, double weight) {
-		weights[ID] = weight;
-	}
+    public void setWeight(int ID, double weight) {
+        weights[ID] = weight;
+    }
 }
