@@ -10,16 +10,16 @@ src/.gitignore
 .classpath
 .project
 *.tar.gz
-compile
-countfeatures
-evaluate
-evaluatebeam
-hashcodedist
-init
-Makefile
-parse
-parsebeam
-trainbeam
+# compile
+# countfeatures
+# evaluate
+# evaluatebeam
+# hashcodedist
+# init
+# Makefile
+# parse
+# parsebeam
+# trainbeam
 
 .idea
 *.iml
