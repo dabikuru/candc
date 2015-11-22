@@ -1,5 +1,6 @@
 package lexicon;
 
+import gr.GRConstraints;
 import io.Preface;
 import utils.ByteWrapper;
 import utils.ShortWrapper;
@@ -24,6 +25,9 @@ public class Categories {
     // map from markedup category, slot pairs to a relation ID;
     // ID also indexes into an array of relation objects:
     public Relations dependencyRelations;
+
+    // set with lexical constraints on GRs
+    public GRConstraints grConstraints;
 
     // used in ruleInstances (and elsewhere) - use just one canonical
     // version of each category to prevent building the same category
@@ -112,8 +116,11 @@ public class Categories {
                         throw new Error(
                                 "error parsing constraints line in markedup");
                     }
-                    //TODO: add constraints to grConstraints
-                    continue;
+                    //TODO: ensure constraints are added properly (UNIT TEST)
+                    //TODO: check for missing methods
+                    String label = tokens[0];
+                    for (int i=1; i<tokens.length; i++)
+                        grConstraints.add(label, tokens[i]);
                 }
                 Category cat;
                 switch (state) {
