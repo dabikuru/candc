@@ -1,0 +1,19 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+INPUT_FILE=$BASE_DIR/data/wsj00.stagged.0.01.100
+OUTPUT_FILE=$BASE_DIR/output/parser.out
+LOG_FILE=$BASE_DIR/output/parser.log
+WEIGHTS_FILE=$BASE_DIR/data/weights
+
+STDOUT_LOG=$BASE_DIR/output/parser.more.log
+FROM_SENT=1
+TO_SENT=2000
+
+sh ./compile
+java -classpath bin -Xms64g -Xmx64g Parser $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# experimental branch: Parser, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g -verbose:gc -Xloggc:output/parser.gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps Parser $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# baseline branch: Parser
+#java -classpath bin -Xms64g -Xmx64g -verbose:gc -Xloggc:output/parser.gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps Parser $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE > $STDOUT_LOG

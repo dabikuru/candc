@@ -1,0 +1,37 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+
+INPUT_FILE=$BASE_DIR/data/baseline_expts/working/data/jack_knifed_stagged/wsj02-21.stagged.0.01.100.all
+
+OUTPUT_WEIGHTS_FILE=$BASE_DIR/output/weights.beam
+OUTPUT_PIPE_FILE=$BASE_DIR/output/train.pipe
+LOG_FILE=$BASE_DIR/output/train.beam.log
+WEIGHTS_FILE=$BASE_DIR/data/weights
+
+GOLD_DEPS_FILE=$BASE_DIR/data/baseline_expts/working/data/wsj02-21.oracle_deps.0.01.100.all
+
+GOLD_DERIVATIONS_FILE=$BASE_DIR/data/baseline_expts/working/gold/train.pipe
+
+ROOT_CATS_FILE=$BASE_DIR/data/baseline_expts/working/gold/wsj02-21.roots
+
+STDOUT_LOG=$BASE_DIR/output/train.beam.more.log
+ITERATIONS=5
+FROM_SENT=1
+TO_SENT=40000
+
+sh ./compile
+java -classpath bin -Xms64g -Xmx64g TrainParserBeam $INPUT_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DEPS_FILE $ROOT_CATS_FILE $ITERATIONS $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+#java -classpath bin -Xms64g -Xmx64g TrainParserBeamDerivations $INPUT_FILE $OUTPUT_WEIGHTS_FILE $OUTPUT_PIPE_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DEPS_FILE $ROOT_CATS_FILE $ITERATIONS $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# experimental branch: TrainParserBeam, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g TrainParserBeam $INPUT_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DEPS_FILE $ROOT_CATS_FILE $ITERATIONS $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# experimental branch: TrainParserBeamDerivations, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g TrainParserBeamDerivations $INPUT_FILE $OUTPUT_WEIGHTS_FILE $OUTPUT_PIPE_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DEPS_FILE $ROOT_CATS_FILE $ITERATIONS $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# experimental branch: TrainParserBeamPipe, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g TrainParserBeamPipe $INPUT_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DERIVATIONS_FILE $ITERATIONS $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# baseline branch: TrainParserBeam
+#java -classpath bin -Xms64g -Xmx64g TrainParserBeam $INPUT_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $GOLD_DEPS_FILE $ROOT_CATS_FILE $ITERATIONS > $STDOUT_LOG

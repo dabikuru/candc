@@ -1,0 +1,10 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+WEIGHTS_FILE=$BASE_DIR/data/weights
+STDOUT_LOG=$BASE_DIR/output/hashcodedist.log
+
+sh ./compile
+java -classpath bin HashCodeDist $WEIGHTS_FILE > $STDOUT_LOG
+
+# experimental branch: HashCodeDist, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar HashCodeDist $WEIGHTS_FILE > $STDOUT_LOG

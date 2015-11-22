@@ -1,0 +1,19 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+
+INPUT_FILE=$BASE_DIR/data/baseline_expts/working/data/jack_knifed_stagged/wsj02-21.stagged.0.01.100.all
+
+OUTPUT_FEATURES_FILE=$BASE_DIR/output/wsj02-21.feats.1-22
+OUTPUT_WEIGHTS_FILE=$BASE_DIR/output/weights.new
+LOG_FILE=$BASE_DIR/output/countfeatures.log
+WEIGHTS_FILE=$BASE_DIR/data/weights
+
+STDOUT_LOG=$BASE_DIR/output/countfeatures.more.log
+FROM_SENT=1
+TO_SENT=40000
+
+sh ./compile
+java -classpath bin -Xms64g -Xmx64g CountFeatures $INPUT_FILE $OUTPUT_FEATURES_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT > $STDOUT_LOG
+
+# experimental branch: CountFeatures, trove, koloboke
+#java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g CountFeatures $INPUT_FILE $OUTPUT_FEATURES_FILE $OUTPUT_WEIGHTS_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT > $STDOUT_LOG

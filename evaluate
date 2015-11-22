@@ -1,0 +1,3 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+scripts/evaluate_new $BASE_DIR/data/wsj00.stagged $BASE_DIR/data/wsj00.ccgbank_deps $BASE_DIR/output/parser.out | grep -o "[0-9.]*% (" | grep -o "[0-9.]*" | tr '\n' ','; echo

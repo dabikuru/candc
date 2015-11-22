@@ -1,0 +1,41 @@
+#!/bin/bash
+BASE_DIR=`pwd`
+
+###
+
+SRC_DIR=/home/sc609/code/java/java_parser_repos/baseline_expts/working
+DEST_DIR=$BASE_DIR/data/baseline_expts/working
+
+FILE_PATH=data/jack_knifed_stagged/wsj02-21.stagged.0.01.100.all
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+FILE_PATH=data/wsj02-21.oracle_deps.0.01.100.all
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+FILE_PATH=data/wsj02-21.oracle_deps.0.01.100.all.per_cell
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+FILE_PATH=gold/wsj02-21.roots
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+###
+
+SRC_DIR=/home/cydf2/ccfiles/pipe
+DEST_DIR=$BASE_DIR/data/baseline_expts/working/gold
+
+FILE_PATH=wsj02-21.pipe
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+###
+
+SRC_DIR=/home/cydf2/ccfiles
+DEST_DIR=$BASE_DIR/data
+
+FILE_PATH=wsj00.stagged.0.01.100
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+FILE_PATH=wsj23.stagged.0.01.100
+cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
+
+#FILE_PATH=wsj00.stagged.0.00001.100
+#cp $SRC_DIR/$FILE_PATH $DEST_DIR/$FILE_PATH
