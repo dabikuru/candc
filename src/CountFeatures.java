@@ -1,16 +1,10 @@
-import io.Preface;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import model.Lexicon;
 import cat_combination.RuleInstancesParams;
 import chart_parser.ChartParserBeam;
 import chart_parser.CountFeaturesDecoder;
+import io.Preface;
+import model.Lexicon;
+
+import java.io.*;
 
 public class CountFeatures {
     public static void main(String[] args) {
@@ -75,7 +69,7 @@ public class CountFeatures {
             parser = new ChartParserBeam(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     ruleInstancesParams, lexicon, featuresFile, weightsFile,
-                    newFeatures, false, cubePruning, beamSize, beta);
+                    newFeatures, false, cubePruning, beamSize, beta, "deps");
         } catch (IOException e) {
             System.err.println(e);
             return;

@@ -1,13 +1,12 @@
 package chart_parser;
 
-import cat_combination.FilledDependency;
 import cat_combination.RuleInstancesParams;
 import cat_combination.SuperCategory;
-import io.Sentence;
-import lexicon.Relations;
 import model.Features;
 import model.Lexicon;
 import model.Weights;
+import printer.Printer;
+import printer.PrinterFactory;
 import utils.Pair;
 
 import java.io.BufferedReader;
@@ -19,6 +18,8 @@ public class ChartParserBeam extends ChartParser {
     private boolean cubePruning;
     private int beamSize;
     private double beta;
+
+    private Printer printer;
 
     public ChartParserBeam(
             String grammarDir,
@@ -35,7 +36,9 @@ public class ChartParserBeam extends ChartParser {
             boolean compactWeights,
             boolean cubePruning,
             int beamSize,
-            double beta) throws IOException {
+            double beta,
+            String printer) throws IOException {
+
         super(grammarDir, altMarkedup, eisnerNormalForm, MAX_WORDS,
                 MAX_SUPERCATS, output, false, false, ruleInstancesParams,
                 lexicon, null, null, newFeatures);
@@ -55,6 +58,8 @@ public class ChartParserBeam extends ChartParser {
 
         this.beamSize = beamSize;
         this.beta = beta;
+
+        this.printer = PrinterFactory.getPrinter(printer);
     }
 
 	/*
@@ -113,7 +118,7 @@ public class ChartParserBeam extends ChartParser {
         }
 
 		/*
-		 * apply unary rules to lexical categories; typeChange needs to come
+         * apply unary rules to lexical categories; typeChange needs to come
 		 * before typeRaise since some results of typeChange can be type-raised
 		 * (but not vice versa)
 		 */
@@ -126,7 +131,7 @@ public class ChartParserBeam extends ChartParser {
             typeRaise(chart.cell(i, 1), i, 1);
 
 			/*
-			 * 260215: it was discovered that sorting the leaves (just sorting,
+             * 260215: it was discovered that sorting the leaves (just sorting,
 			 * no beam) can cause slight variations in the results; this has
 			 * probably got to do with supercategories that have the same score,
 			 * but only part of them survive the (later) beam.
@@ -555,38 +560,44 @@ public class ChartParserBeam extends ChartParser {
         }
     }
 
-    public void printDeps(PrintWriter out, Relations relations, Sentence sentence) {
-        double maxScore = Double.NEGATIVE_INFINITY;
-        SuperCategory maxRoot = null;
+//TODO: delete if it's all fine
+//    public void printDeps(PrintWriter out, Relations relations, Sentence sentence) {
+//        double maxScore = Double.NEGATIVE_INFINITY;
+//        SuperCategory maxRoot = null;
+//
+//        Cell root = chart.root();
+//
+//        for (SuperCategory superCat : root.getSuperCategories()) {
+//            double currentScore = superCat.score;
+//            if (currentScore > maxScore) {
+//                maxScore = currentScore;
+//                maxRoot = superCat;
+//            }
+//        }
+//
+//        if (maxRoot != null) {
+//            printDeps(out, relations, sentence, maxRoot);
+//        }
+//    }
+//
+//    public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {
+//        for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
+//            filled.printFullJslot(out, relations, sentence);
+//        }
+//
+//        if (superCat.leftChild != null) {
+//            printDeps(out, relations, sentence, superCat.leftChild);
+//
+//            if (superCat.rightChild != null) {
+//                printDeps(out, relations, sentence, superCat.rightChild);
+//            }
+//        } else {
+//            sentence.addOutputSupertag(superCat.cat);
+//        }
+//    }
 
-        Cell root = chart.root();
-
-        for (SuperCategory superCat : root.getSuperCategories()) {
-            double currentScore = superCat.score;
-            if (currentScore > maxScore) {
-                maxScore = currentScore;
-                maxRoot = superCat;
-            }
-        }
-
-        if (maxRoot != null) {
-            printDeps(out, relations, sentence, maxRoot);
-        }
-    }
-
-    public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {
-        for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
-            filled.printFullJslot(out, relations, sentence);
-        }
-
-        if (superCat.leftChild != null) {
-            printDeps(out, relations, sentence, superCat.leftChild);
-
-            if (superCat.rightChild != null) {
-                printDeps(out, relations, sentence, superCat.rightChild);
-            }
-        } else {
-            sentence.addOutputSupertag(superCat.cat);
-        }
+    public void printDerivation(PrintWriter out) {
+//        printDeps(out, categories.dependencyRelations, sentence);
+        printer.printDerivation(out, chart, categories.dependencyRelations, sentence);
     }
 }

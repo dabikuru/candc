@@ -72,7 +72,7 @@ public class ParserBeam {
             return;
         }
 
-        ChartParserBeam parser = null;
+        ChartParserBeam parser;
 
         // Initialise ChartParserBeam
         try {
@@ -80,7 +80,7 @@ public class ParserBeam {
             parser = new ChartParserBeam(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     ruleInstancesParams, lexicon, featuresFile, weightsFile,
-                    newFeatures, compactWeights, cubePruning, beamSize, beta);
+                    newFeatures, compactWeights, cubePruning, beamSize, beta, printer);
             long TE_PARSER_INIT = Benchmark.getTime();
             Benchmark.printTime("init parser", TS_PARSER_INIT, TE_PARSER_INIT);
         } catch (IOException e) {
