@@ -14,7 +14,7 @@ public class GRConstraints {
 
     public GRConstraints(String name) {
         this.name = name;
-        this.set = new HashSet<>();
+        this.set = new HashSet<String>();
     }
 
     public String getName() { return name; }
