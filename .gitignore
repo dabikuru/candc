@@ -1,10 +1,10 @@
-bin
-data
-docs
-gc
-lib
-output
-scripts
+bin/*
+data/*
+docs/*
+gc/*
+lib/*
+output/*
+scripts/*
 src/.git
 src/.gitignore
 .classpath
