@@ -10,7 +10,7 @@ public class GRConstraints {
     //C++ based on  pImpl trick
 
     private String name;
-    private Set set;
+    private Set<String> set;
 
     public GRConstraints(String name) {
         this.name = name;

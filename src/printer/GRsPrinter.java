@@ -10,7 +10,7 @@ import lexicon.Relations;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class GRsPrinter extends Printer {
+class GRsPrinter extends Printer {
 
     public ArrayList<FilledDependency> filledDependencies;
     public ArrayList<GR> GRs;

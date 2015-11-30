@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -rf bin/*
-javac -d bin -sourcepath src src/*.java
+javac -Xlint:unchecked -d bin -sourcepath src src/*.java
 #javac -d bin -sourcepath src -classpath lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar src/*.java

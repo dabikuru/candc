@@ -1,7 +1,10 @@
 package chart_parser;
 
+import cat_combination.FilledDependency;
 import cat_combination.RuleInstancesParams;
 import cat_combination.SuperCategory;
+import io.Sentence;
+import lexicon.Relations;
 import model.Features;
 import model.Lexicon;
 import model.Weights;
@@ -579,22 +582,23 @@ public class ChartParserBeam extends ChartParser {
 //            printDeps(out, relations, sentence, maxRoot);
 //        }
 //    }
-//
-//    public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {
-//        for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
-//            filled.printFullJslot(out, relations, sentence);
-//        }
-//
-//        if (superCat.leftChild != null) {
-//            printDeps(out, relations, sentence, superCat.leftChild);
-//
-//            if (superCat.rightChild != null) {
-//                printDeps(out, relations, sentence, superCat.rightChild);
-//            }
-//        } else {
-//            sentence.addOutputSupertag(superCat.cat);
-//        }
-//    }
+
+    //FIXME: duplicated code. Kept because it's called by trainer. Solutions?
+    public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {
+        for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
+            filled.printFullJslot(out, relations, sentence);
+        }
+
+        if (superCat.leftChild != null) {
+            printDeps(out, relations, sentence, superCat.leftChild);
+
+            if (superCat.rightChild != null) {
+                printDeps(out, relations, sentence, superCat.rightChild);
+            }
+        } else {
+            sentence.addOutputSupertag(superCat.cat);
+        }
+    }
 
     public void printDerivation(PrintWriter out) {
 //        printDeps(out, categories.dependencyRelations, sentence);

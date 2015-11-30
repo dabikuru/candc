@@ -1,22 +1,17 @@
 package chart_parser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-
+import cat_combination.FilledDependency;
+import cat_combination.RuleInstancesParams;
+import cat_combination.SuperCategory;
 import lexicon.Category;
 import model.Lexicon;
 import training.Feature;
 import utils.Pair;
-import cat_combination.FilledDependency;
-import cat_combination.RuleInstancesParams;
-import cat_combination.SuperCategory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class ChartTrainParserBeam extends ChartParserBeam {
     protected boolean parallelUpdate;
@@ -49,10 +44,11 @@ public class ChartTrainParserBeam extends ChartParserBeam {
             double beta,
             boolean parallelUpdate,
             boolean updateLogP) throws IOException {
+        //FIXME: clean constructor to handle Printer
         super(grammarDir, altMarkedup, eisnerNormalForm, MAX_WORDS,
                 MAX_SUPERCATS, output, ruleInstancesParams,
                 lexicon, featuresFile, weightsFile, newFeatures, false, cubePruning,
-                beamSize, beta);
+                beamSize, beta, "deps");
 
         this.chart = new Chart(MAX_WORDS, output, categories.dependencyRelations, false, true);
         this.chart.setWeights(this.weights);
