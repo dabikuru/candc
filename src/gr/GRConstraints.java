@@ -19,6 +19,12 @@ public class GRConstraints {
         return set.size();
     }
 
+    /**
+     *
+     * @param label
+     * @param word
+     * @return True if the label/pair const
+     */
     public boolean get(String label, String word) {
         return set.contains(label + " " + word);
     }

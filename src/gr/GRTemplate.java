@@ -26,7 +26,7 @@ public class GRTemplate {
     /**
      * Creates a template and adds format information by scanning a markedup line
      */
-    public GRTemplate(Categories cats, String cat, int slot, String markedup) {
+    public GRTemplate(Categories cats, String cat, short slot, String markedup) {
         this.markedup = markedup;
         this.groups = cats.grConstraints;
 
@@ -56,7 +56,7 @@ public class GRTemplate {
                 if (++i == markedup.length())
                     throw new Error("GR format expression ends with a single %");
 
-                int oslot = 0;
+                short oslot = 0;
                 char c = markedup.charAt(i);
                 switch (c) {
                     case '%':
@@ -67,10 +67,10 @@ public class GRTemplate {
                     case '1':
                     case '2':
                     case '3':
-                        oslot = c - '0';
+                        oslot = (short) Character.getNumericValue(c);
                         if (oslot == slot)
                             throw new Error("GR should not use own slot as field specifier %" + c);
-                        other_rel = cats.dependencyRelations.getRelID(cat, (short) slot); //FIXME: type & RelId 1 or 2?
+                        other_rel = cats.dependencyRelations.getRelID(cat, slot); //FIXME: type & RelId 1 or 2?
                         fmt += 'o';
                         continue;
                     case 'c':

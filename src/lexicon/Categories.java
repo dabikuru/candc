@@ -51,19 +51,19 @@ public class Categories {
         grConstraints = new GRConstraints();
 
         readMarkedupFile(grammarDir, ALT_MARKEDUP);
-        seenCategories = new HashMap<String, Category>();
-        canonicalCats = new HashMap<Category, Category>();
+        seenCategories = new HashMap<>();
+        canonicalCats = new HashMap<>();
 
-        trNPs = new ArrayList<TypeRaisedCategory>();
+        trNPs = new ArrayList<>();
         readTRcategories(grammarDir + "/trNP", trNPs);
 
-        trPPs = new ArrayList<TypeRaisedCategory>();
+        trPPs = new ArrayList<>();
         readTRcategories(grammarDir + "/trPP", trPPs);
 
-        trAPs = new ArrayList<TypeRaisedCategory>();
+        trAPs = new ArrayList<>();
         readTRcategories(grammarDir + "/trAP", trAPs);
 
-        trVP_TOs = new ArrayList<TypeRaisedCategory>();
+        trVP_TOs = new ArrayList<>();
         readTRcategories(grammarDir + "/trVP_to", trVP_TOs);
     }
 
@@ -188,7 +188,8 @@ public class Categories {
                     } else {
                         // Read in GR rule
                         // C++: relations.add_gr(*this, markedup_str, slot, gr);
-                        dependencyRelations.addGR(this, markedupCatString, tokens);
+                        short slot = Short.parseShort(tokens[0]);
+                        dependencyRelations.addGR(this, markedupCatString, slot, lines[i]);
                     }
                 }
             }

@@ -23,13 +23,16 @@ public class Preface {
     }
 
     public static void readPreface(Scanner in) throws IOException {
-        if (in.nextLine().charAt(0) != '#')
+        String line = in.nextLine();
+
+        if (line.charAt(0) != '#')
             throw new IllegalArgumentException("File does not start with the mandatory preface.");
 
         while (in.hasNextLine()) {
-            if (in.nextLine().isEmpty())
+            line = in.nextLine();
+            if (line.isEmpty())
                 break;
-            if (in.nextLine().charAt(0) != '#')
+            if (line.charAt(0) != '#')
                 throw new IllegalArgumentException("Uncommented line within preface.");
         }
     }
