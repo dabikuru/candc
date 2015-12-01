@@ -45,6 +45,8 @@ public class Categories {
     // markedup file (marked ! in the file)
     public Categories(String grammarDir, boolean ALT_MARKEDUP) {
         dependencyRelations = new Relations();
+        grConstraints = new GRConstraints();
+
         readMarkedupFile(grammarDir, ALT_MARKEDUP);
         seenCategories = new HashMap<String, Category>();
         canonicalCats = new HashMap<Category, Category>();

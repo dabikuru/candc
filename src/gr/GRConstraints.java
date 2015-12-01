@@ -9,8 +9,13 @@ import java.util.Set;
 public class GRConstraints {
     //C++ based on  pImpl trick
 
+    //FIXME: 'name' is probably useless?
     private String name;
     private Set<String> set;
+
+    public GRConstraints() {
+        this.set = new HashSet<String>();
+    }
 
     public GRConstraints(String name) {
         this.name = name;

@@ -54,7 +54,7 @@ public class ParserBeam {
         String weightsFile = args[3];
         String fromSent = args[4];
         String toSent = args[5];
-        String printer = args[6]; //TODO: do something with this
+        String printer = args[6];
 
         int fromSentence = Integer.valueOf(fromSent);
         int toSentence = Integer.valueOf(toSent);

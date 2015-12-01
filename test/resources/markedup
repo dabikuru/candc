@@ -1,0 +1,145 @@
+#
+# SC 7 Jan 2014
+# made some changes to that all cats have variables
+# will want to use SVN markedup file for real
+# this was originally from 1.0 release I think (in the true_knowledge dir)
+#
+# C&C NLP tools
+# Copyright (c) Universities of Edinburgh, Oxford and Sydney
+# Copyright (c) James R. Curran
+#
+# This software is covered by a non-commercial use licence.
+# See LICENCE.txt for the full text of the licence.
+#
+# If LICENCE.txt is not included in this distribution
+# please email candc@it.usyd.edu.au to obtain a copy.
+# This is the 'markedup' file which maps from bare categories to the
+# categories marked up with head and dependency information.  This
+# file now also contains the mapping to grammatical relations based
+# on the Briscoe and Carroll scheme.
+#
+# Editing existing marked up categories in this file without regenerating
+# the training data and reestimating the model will lead to reduced
+# performance.  However, it is possible to change the mapping to grammatical
+# relations without affecting the existing model.
+#
+# The category information is in the following format:
+# <frequency> <bare_category>
+#   <#_of_slots> <markedup_category>
+#   [! <markedup_category>]
+#   <slot_1> <gr_1>
+#   <slot_2> <gr_2>
+# ...
+#
+# The exclamation marked entry is an alternative markedup category
+# with a different head passing scheme to match Briscoe and Carroll.
+#
+# The slots in the CCG markup aren't always numbered from left to right (for
+# historical reasons). This is an inconsistency we will fix in a later version.
+#
+# The gr annotation is based on the Briscoe and Carroll (B+C) GR scheme.
+# See the following technical report for details:
+#
+# Ted Briscoe
+# An Introduction to Tag Sequence Grammars and the RASP System Parser
+# Technical Report: UCAM-CL-TR-662
+# University of Cambridge Computing Laboratory
+#
+# Some things to fix:
+#
+# the subject in (S[adj]\NP)/NP gets ignored, which is correct except when the dependency has
+# come about through a unary rule. So we're currently not producing this unary rule dependency.
+# (There may be other cases like this.)
+#
+# The GR markup for the question categories at the end of the file needs looking at again
+#
+# The CCG dependencies haven't been changed, even where there are obvious improvements,
+# because this version of the markedup file was used to get the CL-paper results and
+# we'd like this to serve as part of the record of those results.
+
+# lexical constraint groups
+=be ai am are be been being is was were 's 'm 're
+=aux ai am are be been being is was were 's 'm 're
+=aux has have had 've
+=aux do did does 'd 'll ca can could may might must ought
+=aux shall should will wo would
+=aux get got gotten getting
+=det another other some such
+=part all both
+# now list the markedup categories
+N 
+  0 N{_}
+
+N/N 
+  1 (N{Y}/N{Y}<1>){_}
+  1 ignore
+
+NP[nb]/N 
+  1 (NP[nb]{Y}/N{Y}<1>){_}
+  1 ignore
+
+, 
+  0 ,{_}
+
+(NP\NP)/NP 
+  2 ((NP{Y}\NP{Y}<1>){_}/NP{Z}<2>){_}
+  1 ignore
+  2 ignore
+
+. 
+  0 .{_}
+
+((S\NP)\(S\NP))/NP 
+  2 (((S[X]{Y}\NP{Z}){Y}\(S[X]{Y}\NP{Z}){Y}<1>){_}/NP{W}<2>){_}
+  1 ignore
+  2 ignore
+
+conj 
+  0 conj{_}
+
+NP 
+  0 NP{_}
+
+PP/NP 
+  1 (PP{_}/NP{Y}<1>){_}
+  1 ignore
+
+(S\NP)\(S\NP) 
+  1 ((S[X]{Y}\NP{Z}){Y}\(S[X]{Y}\NP{Z}){Y}<1>){_}
+  1 ignore
+
+(S[dcl]\NP)/NP 
+  2 ((S[dcl]{_}\NP{Y}<1>){_}/NP{Z}<2>){_}
+  1 ignore
+  2 ignore
+
+(S[b]\NP)/NP 
+  2 ((S[b]{_}\NP{Y}<1>){_}/NP{Z}<2>){_}
+  1 ignore
+  2 ignore
+
+(S[to]\NP)/(S[b]\NP) 
+  2 ((S[to]{_}\NP{Y}<1>){_}/(S[b]{Z}\NP{Y}){Z}<2>){_}
+  1 ignore
+  2 ignore
+
+(S[dcl]\NP)/(S[b]\NP) 
+  2 ((S[dcl]{_}\NP{Y}<1>){_}/(S[b]{Z}\NP{Y}){Z}<2>){_}
+  1 ignore
+  2 ignore
+
+N[num] 
+  0 N[num]{_}
+
+(NP[nb]/N)\NP 
+  2 ((NP[nb]{Y}/N{Y}<1>){_}\NP{Z}<2>){_}
+  1 ignore
+  2 ignore
+
+S[adj]\NP 
+  1 (S[adj]{_}\NP{Y}<1>){_}
+  1 ignore
+
+N/N[num] 
+  1 (N{_}/N[num]{Y}<1>){_}
+  1 ignore
