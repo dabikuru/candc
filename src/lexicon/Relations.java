@@ -85,6 +85,6 @@ public class Relations {
      * @param fmt  Body of the GR, e.g. {1, "nsubj", "%l", "%f"}
      */
     void addGR(Categories cats, String cat, String[] fmt) {
-        //TODO
+        //TODO: implement
     }
 }

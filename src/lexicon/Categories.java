@@ -6,11 +6,14 @@ import utils.ByteWrapper;
 import utils.ShortWrapper;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Categories {
     // map from the plain category string to the markedup string:
@@ -76,15 +79,15 @@ public class Categories {
         return markedupCategories.get(plainCategoryString);
     }
 
-    // 3 constants only used when reading the markedup file:
-    private enum States {
-        CAT, MARKEDUP, GRS
-    }
 
     private void readMarkedupFile(String grammarDir, boolean ALT_MARKEDUP) {
-        markedupStrings = new HashMap<String, String>();
-        plainCategoryStrings = new HashMap<String, String>();
-        markedupCategories = new HashMap<String, Category>();
+        Pattern constraintPattern, grPattern;
+        constraintPattern = Pattern.compile("=\\w+ (\\S+ ?)+\\n", Pattern.MULTILINE);
+        grPattern = Pattern.compile("\\S+ ?\\n(  \\d \\S+\\n)(  ! \\S+\\n)*(  \\d .+\\n)*", Pattern.MULTILINE);
+
+        markedupStrings = new HashMap<>();
+        plainCategoryStrings = new HashMap<>();
+        markedupCategories = new HashMap<>();
 
         // not sure when the sentinel is used for categories, but
         // retaining from C&C:
@@ -92,130 +95,111 @@ public class Categories {
         markedupCategories.put("+", null);
 
         String markedupFile = grammarDir + "/markedup";
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(markedupFile));
-            Preface.readPreface(in);
 
-            States state = States.CAT;
+
+        try (Scanner in = new Scanner(new File(markedupFile))) {
+
+            Preface.readPreface(in);
 
             String plainCatString = "";
             String markedupCatString = "";
-            String line = "";
-            while ((line = in.readLine()) != null) {
-                if (line.length() == 0) {
-                    if (state != States.GRS) {
-                        throw new Error("missing markedup or GRS");
-                    }
-                    state = States.CAT;
-                    continue;
+            String chunk;
+
+            // Parse all constraints
+            while ((chunk = in.findWithinHorizon(constraintPattern, 0)) != null) {
+                System.out.println("Contraints: " + chunk);
+
+                String[] tokens = chunk.split("\\s");
+                if (tokens.length < 2) {
+                    throw new Error(
+                            "error parsing constraints line in markedup");
                 }
-                if (line.charAt(0) == '#') {
-                    continue;
-                }
-                if (line.charAt(0) == '=') {
-                    String[] tokens = line.split("\\s");
-                    if (tokens.length < 2) {
-                        throw new Error(
-                                "error parsing constraints line in markedup");
-                    }
-                    //TODO: ensure constraints are added properly (UNIT TEST)
-                    //TODO: check for missing methods
-                    String label = tokens[0];
-                    for (int i=1; i<tokens.length; i++)
-                        grConstraints.add(label, tokens[i]);
-                }
+
+                String label = tokens[0];
+                for (int i = 1; i < tokens.length; i++)
+                    grConstraints.add(label, tokens[i]);
+            }
+
+
+            // Parse all markedup rule instances
+            while ((chunk = in.findWithinHorizon(grPattern, 0)) != null) {
+                System.out.println("GR rule:\n" + chunk + "\n");
+
+                String[] lines, tokens;
                 Category cat;
-                switch (state) {
-                    case CAT:
-                        String[] tokens = (line.trim()).split("\\s+");
-                        if (tokens.length != 1) {
-                            throw new Error(
-                                    "error parsing plain cat line in markedup");
-                        }
-                        plainCatString = tokens[0];
-                        state = States.MARKEDUP;
-                        break;
-                    case MARKEDUP:
-                        tokens = (line.trim()).split("\\s+");
 
-                        if (tokens.length != 2) {
-                            throw new Error(
-                                    "error parsing markedup cat line in markedup");
-                        }
+                lines = chunk.split("\\n");
 
+                // 1st line: CAT
+                tokens = (lines[0].trim()).split("\\s+");
+                if (tokens.length != 1)
+                    throw new Error(
+                            "error parsing plain cat line in markedup");
+                plainCatString = tokens[0];
+
+
+                // 2nd line: MARKEDUP
+                tokens = (lines[1].trim()).split("\\s+");
+                if (tokens.length != 2) {
+                    throw new Error(
+                            "error parsing markedup cat line in markedup");
+                }
+
+                markedupCatString = tokens[1];
+                cat = parse(markedupCatString);
+
+                byte[] seenVariables = new byte[VarID.NUM_VARS];
+                Arrays.fill(seenVariables, VarID.NONE);
+
+                cat.reorderVariables(seenVariables, new ByteWrapper(
+                        (byte) (0)));
+
+                markedupStrings.put(plainCatString, markedupCatString);
+                plainCategoryStrings.put(markedupCatString, plainCatString);
+                markedupCategories.put(plainCatString, cat);
+
+                // 3rd+line: GR
+                for (int i = 2; i < lines.length; i++) {
+                    tokens = lines[i].split("\\s");
+                    if (tokens.length < 2) {
+                        throw new Error("error parsing gr cat line in markedup");
+                    }
+
+                    if ("!".equals(tokens[0])) {
+                        if (!ALT_MARKEDUP)
+                            // Ignore alternative markedup
+                            continue;
+
+                        // Parse alternative markedup
                         markedupCatString = tokens[1];
                         cat = parse(markedupCatString);
 
-					/*
-                     * call reorder since C&C does, although this Java class
-					 * does now check the variable ordering in the consumeSlot
-					 * method
-					 * 
-					 * ensures categories have vars ordered according to the
-					 * ordering in the VarID class:
-					 */
-                        byte[] seenVariables = new byte[VarID.NUM_VARS];
-                        Arrays.fill(seenVariables, VarID.NONE); // not necessary
-                        // since VarID.NONE
-                        // is 0, but let's
-                        // be explicit
+                        seenVariables = new byte[VarID.NUM_VARS];
+                        Arrays.fill(seenVariables, VarID.NONE);
 
                         cat.reorderVariables(seenVariables, new ByteWrapper(
                                 (byte) (0)));
 
                         markedupStrings.put(plainCatString, markedupCatString);
-                        plainCategoryStrings.put(markedupCatString, plainCatString);
+                        plainCategoryStrings.put(markedupCatString,
+                                plainCatString);
                         markedupCategories.put(plainCatString, cat);
 
-                        state = States.GRS;
-                        break;
-                    case GRS:
-                        tokens = line.split("\\s");
-                        if (tokens.length < 2) {
-                            throw new Error("error parsing gr cat line in markedup");
-                        }
-                        String tmp = tokens[0];
-                        if (tmp == "!") {
-                            if (!ALT_MARKEDUP) {
-                                continue;
-                            }
-
-                            markedupCatString = tokens[1];
-                            cat = parse(markedupCatString);
-
-                            seenVariables = new byte[VarID.NUM_VARS];
-                            Arrays.fill(seenVariables, VarID.NONE);
-
-                            cat.reorderVariables(seenVariables, new ByteWrapper(
-                                    (byte) (0)));
-
-                            markedupStrings.put(plainCatString, markedupCatString);
-                            plainCategoryStrings.put(markedupCatString,
-                                    plainCatString);
-                            markedupCategories.put(plainCatString, cat);
-
-                            continue;
-                        } else {
-                            //TODO: parse GRs!
-                            // tmp is relID
-                            // feed remaining tokens to addGR
-                            // C++: relations.add_gr(*this, markedup_str, slot, gr);
-                            dependencyRelations.addGR(this, markedupCatString, tokens);
-
-                        }
-                        break;
+                    } else {
+                        // Read in GR rule
+                        // C++: relations.add_gr(*this, markedup_str, slot, gr);
+                        dependencyRelations.addGR(this, markedupCatString, tokens);
+                    }
                 }
-            }
-            if (line != null) {
-                throw new Error("didn't read the whole markedup file");
             }
         } catch (IOException e) {
             System.err.println(e);
         }
     }
 
-    /*
-     * when parsing a markedup string, this will add new relations to
+
+    /**
+     * When parsing a markedup string, this will add new relations to
      * dependencyRelations (so be careful when using this outside of parsing the
      * markedup file)
      */
@@ -384,11 +368,11 @@ public class Categories {
             currentChar = markedupString.charAt(++index.value);
         }
         if (currentChar == '*') {
-			/*
-			 * from the C&C code: lrange.value = markedup.size(); this assumes
+            /*
+             * from the C&C code: lrange.value = markedup.size(); this assumes
 			 * that the markedup data structure is ordered and categories can be
 			 * accessed also by an index (current size gives the index)
-			 * 
+			 *
 			 * leave for later:
 			 */
             lrange.value = 1;
@@ -420,7 +404,7 @@ public class Categories {
         index.value++;
 
 		/*
-		 * the addRelation method from the Relations class assumes that the
+         * the addRelation method from the Relations class assumes that the
 		 * relations for a particular string are added consecutively and that
 		 * the slots are ordered from 1, increasing by 1 each time:
 		 */
@@ -475,8 +459,8 @@ public class Categories {
                 markedupCatString = tokens[0];
                 varString = tokens[1];
                 Category cat = parse(markedupCatString);
-				/*
-				 * typically the varString is the sentinel "+" - this gets
+                /*
+                 * typically the varString is the sentinel "+" - this gets
 				 * converted to NONE by VarID.convert
 				 */
                 byte depVar = VarID.convert(varString);
@@ -485,7 +469,7 @@ public class Categories {
                 cat.reorderVariables(seenVariables, new ByteWrapper((byte) (0)));
 
 				/*
-				 * seenVariables[VarID.X] is the new variable corresponding to
+                 * seenVariables[VarID.X] is the new variable corresponding to
 				 * the lexical item - this is needed by the SuperCategory
 				 * constructor when called later to copy over the corresponding
 				 * Variable; seenVariables[depVar] is the new variable for the
@@ -512,7 +496,7 @@ public class Categories {
         return cat;
     }
 
-    /*
+    /**
      * Returns the input if it's not found in the canonical map; otherwise
      * returns the canonical version
      */
@@ -525,4 +509,5 @@ public class Categories {
             return cat;
         }
     }
+
 }

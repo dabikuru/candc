@@ -26,4 +26,11 @@ public class GRConstraints {
     public void add(String label, String word) {
         set.add(label + " " + word);
     }
+
+    @Override
+    public String toString() {
+        return "GRConstraints{" +
+                "set=" + set +
+                '}';
+    }
 }
