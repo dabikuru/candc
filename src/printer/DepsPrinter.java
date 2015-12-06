@@ -5,11 +5,17 @@ import cat_combination.SuperCategory;
 import chart_parser.Cell;
 import chart_parser.Chart;
 import io.Sentence;
+import lexicon.Categories;
 import lexicon.Relations;
 
 import java.io.PrintWriter;
 
-class DepsPrinter extends Printer{
+class DepsPrinter extends Printer {
+
+
+    DepsPrinter(Categories cats) {
+        super(cats);
+    }
 
     //TODO: check this works
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
