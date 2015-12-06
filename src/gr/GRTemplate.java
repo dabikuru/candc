@@ -7,96 +7,89 @@ import lexicon.Categories;
 import lexicon.Category;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //TODO: implement methods
 public class GRTemplate {
-    protected String _tmpCat; // temporary storage for the category constraint
+    protected String tmpCat; // temporary storage for the category constraint
     public String markedup;
     public boolean ignore;
-    public String fmt = "";
-    public short other_rel;
+    public String fmt;
+    public short otherRel;
 
     public boolean constrained;     // are there any constraints on
     public GRConstraints groups;    // lexical constraint groups
-    public String con_lex;          // lexical constraint label
-    public Category con_cat;        // category constraint
-    public short con_rel;           // relation that the category constraint applies to
-    public GRTemplate next;
+    public String conLex;          // lexical constraint label
+    public Category conCat;        // category constraint
+    public short conRel;           // relation that the category constraint applies to
+//    public GRTemplate next;      TODO: these should be in a linked list anyway
+
+    private static final Pattern grPattern = Pattern.compile("(?<fmt>[a-z]+(\\s(%[\\dflck]|_))*)(?<cons>(\\s=\\S+)*)");
+    private static final Pattern consPattern = Pattern.compile("=(\\S+)");
+    private static final Pattern fmtPattern = Pattern.compile("%[\\dflck]");
+
 
     /**
-     * Creates a template and adds format information by scanning a markedup line
+     * Create a template and adds format information by scanning a markedup line
      */
     public GRTemplate(Categories cats, String cat, short slot, String markedup) {
         this.markedup = markedup;
         this.groups = cats.grConstraints;
 
-        for (int i = 0; i < markedup.length(); i++) {
-            if (markedup.charAt(i) == '#')
-                break;
+        Matcher m = grPattern.matcher(markedup);
 
-            if (markedup.charAt(i) == '=') {
-                constrained = true;
+        if (!m.find())
+            throw new Error("Invalid format for GR rule");
+        fmt = m.group("fmt");
 
-                String val = markedup.substring(i, markedup.indexOf(' ', i));
-                // If the first char after '=' is lowercase, this is a lexical constraint
-                if (Character.isLowerCase(val.charAt(1))) {
-                    if (!con_lex.isEmpty())
-                        throw new Error("lexical constraint has already been set for " + markedup);
-                    con_lex = '=' + val;
-                } else {
-                    if (!_tmpCat.isEmpty())
-                        throw new Error("category constraint has already been set for " + markedup);
-                    _tmpCat = val;
-                }
-                continue;
+        // Check for ignore
+        if ("ignore".equals(fmt)) {
+            ignore = true;
+            return;
+        }
+
+
+        //Process the rule: check slots numbers and replace with 'o', set relation number
+        Matcher fmtMatcher = fmtPattern.matcher(fmt);
+        while (fmtMatcher.find()) {
+            char c = fmtMatcher.group().charAt(1);
+            switch (c) {
+                case '1':
+                case '2':
+                case '3':
+                    short oslot = (short) Character.getNumericValue(c);
+                    if (oslot == slot) throw new Error("GR should not use own slot as field specifier %" + c);
+                    otherRel = cats.dependencyRelations.getRelID(cat, slot);
+                    break;
+                case 'c':
+                    conRel = 1;
+                    break;
+                case 'k':
+                    conRel = 2;
+                    break;
             }
+        }
+        fmt = fmt.replaceAll("\\d", "o").replace('k', 'c');
 
-            fmt += markedup.charAt(i);
-            if (markedup.charAt(i) == '%') {
-                if (++i == markedup.length())
-                    throw new Error("GR format expression ends with a single %");
 
-                short oslot = 0;
-                char c = markedup.charAt(i);
-                switch (c) {
-                    case '%':
-                    case 'f':
-                    case 'l':
-                        fmt += c;
-                        continue;
-                    case '1':
-                    case '2':
-                    case '3':
-                        oslot = (short) Character.getNumericValue(c);
-                        if (oslot == slot)
-                            throw new Error("GR should not use own slot as field specifier %" + c);
-                        other_rel = cats.dependencyRelations.getRelID(cat, slot); //FIXME: type & RelId 1 or 2?
-                        fmt += 'o';
-                        continue;
-                    case 'c':
-                        fmt += 'c';
-                        con_rel = 1;
-                        continue;
-                    case 'k':
-                        fmt += 'c';
-                        con_rel = 2;
-                        continue;
-                    default:
-                        throw new Error("unrecognised GR field specifier %" + c);
-
+        // Process constraints, if any
+        if (!m.group("cons").isEmpty()) {
+            constrained = true;
+            Matcher constraintMacher = consPattern.matcher(m.group("cons"));
+            while (constraintMacher.find()) {
+                String cons = constraintMacher.group();
+                if (Character.isLowerCase(cons.charAt(1))) {
+                    //Lexical constraint
+                    if (!(conLex == null)) throw new Error("lexical constraint has already been set for " + markedup);
+                    conLex = cons; // preserve '='
+                } else {
+                    //Categorial constraint
+                    if (!(tmpCat == null)) throw new Error("category constraint has already been set for " + markedup);
+                    tmpCat = cons.substring(1); // get rid of '='
                 }
             }
         }
-
-        //FIXME: figure out why we erase the tail of string
-        for (int i = fmt.length(); i != 0; i--)
-            if (fmt.charAt(i - 1) != ' ') {
-                fmt = fmt.substring(i + 1);
-                break;
-            }
-
-        if ("ignore".equals(this.fmt))
-            ignore = true;
     }
 
     protected void get(List<GR> grs, String format, Sentence sent, SuperCategory sc,
@@ -104,25 +97,25 @@ public class GRTemplate {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public void set_cat(Categories cats) {
+    public void setCat(Categories cats) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
-     * Checks if all constraints are satisfied
+     * Check if all constraints are satisfied
      */
     public boolean satisfy(Sentence sent, SuperCategory sc, FilledDependency filled) {
         if (!constrained)
             return true;
 
         // False is the categorial constraint is not satisfied
-        if (con_cat != null && !sent.outputSupertags.get(filled.fillerIndex - 1).equals(con_cat))
+        if (conCat != null && !sent.outputSupertags.get(filled.fillerIndex - 1).equals(conCat))
             return false;
 
         // Check if lexical constraints are satisfied
-        if (!con_lex.isEmpty()) {
+        if (!conLex.isEmpty()) {
             String word = sent.words.get(filled.headIndex - 1).toLowerCase();
-            return groups.get(con_lex, word);
+            return groups.get(conLex, word);
         }
 
         return true;

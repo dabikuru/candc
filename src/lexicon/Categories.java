@@ -81,9 +81,9 @@ public class Categories {
 
 
     private void readMarkedupFile(String grammarDir, boolean ALT_MARKEDUP) {
-        Pattern constraintPattern, grPattern;
+        Pattern constraintPattern, rulePattern;
         constraintPattern = Pattern.compile("=\\w+ (\\S+ ?)+\\n", Pattern.MULTILINE);
-        grPattern = Pattern.compile("\\S+ ?\\n(  \\d \\S+\\n)(  ! \\S+\\n)*(  \\d .+\\n)*", Pattern.MULTILINE);
+        rulePattern = Pattern.compile("\\S+ ?\\n(  \\d \\S+\\n)(  ! \\S+\\n)*(  \\d .+\\n)*", Pattern.MULTILINE);
 
         markedupStrings = new HashMap<>();
         plainCategoryStrings = new HashMap<>();
@@ -107,7 +107,7 @@ public class Categories {
 
             // Parse all constraints
             while ((chunk = in.findWithinHorizon(constraintPattern, 0)) != null) {
-                System.out.println("Contraints: " + chunk);
+                //System.out.println("Contraints: " + chunk);
 
                 String[] tokens = chunk.split("\\s");
                 if (tokens.length < 2) {
@@ -122,8 +122,8 @@ public class Categories {
 
 
             // Parse all markedup rule instances
-            while ((chunk = in.findWithinHorizon(grPattern, 0)) != null) {
-                System.out.println("GR rule:\n" + chunk + "\n");
+            while ((chunk = in.findWithinHorizon(rulePattern, 0)) != null) {
+                //System.out.println("GR rule:\n" + chunk + "\n");
 
                 String[] lines, tokens;
                 Category cat;
@@ -160,7 +160,7 @@ public class Categories {
 
                 // 3rd+line: GR
                 for (int i = 2; i < lines.length; i++) {
-                    tokens = lines[i].split("\\s");
+                    tokens = lines[i].trim().split("\\s+");
                     if (tokens.length < 2) {
                         throw new Error("error parsing gr cat line in markedup");
                     }
@@ -189,7 +189,8 @@ public class Categories {
                         // Read in GR rule
                         // C++: relations.add_gr(*this, markedup_str, slot, gr);
                         short slot = Short.parseShort(tokens[0]);
-                        dependencyRelations.addGR(this, markedupCatString, slot, lines[i]);
+                        dependencyRelations.addGR(this, markedupCatString, slot,
+                                String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length))); //FIXME: better way?
                     }
                 }
             }
