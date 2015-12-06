@@ -6,7 +6,7 @@ public class PrinterFactory {
 
     public static Printer getPrinter(String printer, Categories categories) {
         if ("deps".equals(printer))
-            return new DepsPrinter();
+            return new DepsPrinter(categories);
 
         else if ("grs".equals(printer))
             return new GRsPrinter(categories);
