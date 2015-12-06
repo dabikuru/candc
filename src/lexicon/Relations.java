@@ -30,9 +30,9 @@ public class Relations {
     // the special conj relation for dealing with coordination
 
     public Relations() {
-        relations = new ArrayList<Relation>();
-        relIDs = new HashMap<String, Short>();
-        relIDsII = new HashMap<CategoryJSlotPair, Short>();
+        relations = new ArrayList<>();
+        relIDs = new HashMap<>();
+        relIDsII = new HashMap<>();
         addRelation("", (short) (0), (short) (0));
         // first index of a relation needs to be 1
         initConj();
@@ -84,33 +84,17 @@ public class Relations {
     /**
      * @param cats Categories object
      * @param cat  markedupCatString
-     * @param fmt  Body of the GR, e.g. {1, "nsubj", "%l", "%f"}
+     * @param fmt  Body of the GR rule, e.g. "  2 nsubj %l %f"
      */
     void addGR(Categories cats, String cat, short slot, String fmt) {
-        //TODO: implement
+        //TODO: test
+
+        Relation relEntry = getRelation(getRelID(cat, slot));
+        if (relEntry == null)
+            throw new Error(
+                    "Cannot label missing slot with GR (category '" + cat + "', slot " + slot + ", gr '" + fmt + "')");
 
         GRTemplate gr = new GRTemplate(cats, cat, slot, fmt);
+        relEntry.grs.add(gr);
     }
-
-//    FOR INSPIRATION (FROM C++)
-//    void add_gr(const Categories &cats, const std::string &cat, ulong slot,
-//                const std::string &fmt) {
-//        Hash hash(cat);
-//        hash += slot;
-//
-//        ulong bucket = hash % NBUCKETS_;
-//        Entry *entry = buckets_[bucket]->find(cat, slot, hash);
-//        if (!entry)
-//            die(msg << "cannot label missing slot with GR (category '"
-//                    << cat << "', slot " << slot << ", gr '" << fmt << "')");
-//
-//        GRTemplate *gr = new GRTemplate(cats, cat, slot, fmt);
-//        if (!entry->rel.gr)
-//            entry->rel.gr = gr;
-//        else {
-//            GRTemplate *i = entry->rel.gr;
-//            for (; i->next; i = i->next);
-//            i->next = gr;
-//        }
-//    }
 }

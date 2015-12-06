@@ -6,21 +6,26 @@ package lexicon;
  * is different and required for evaluating against CCGbank
  */
 
+import gr.GRTemplate;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class Relation {
     public final String category;
     public final short slot;
     public final short jslot;
+    public List<GRTemplate> grs;
 
     public Relation(String category, short slot, short jslot) {
         this.category = category;
         this.slot = slot;
         this.jslot = jslot;
+        this.grs = new LinkedList<>();
     }
 
     public Relation(Relation other) {
-        category = other.category;
-        slot = other.slot;
-        jslot = other.jslot;
+        this(other.category, other.slot, other.jslot);
     }
 
     public void printSlot(boolean juliaSlots) {

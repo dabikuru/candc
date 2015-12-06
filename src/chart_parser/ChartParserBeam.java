@@ -62,7 +62,7 @@ public class ChartParserBeam extends ChartParser {
         this.beamSize = beamSize;
         this.beta = beta;
 
-        this.printer = PrinterFactory.getPrinter(printer);
+        this.printer = PrinterFactory.getPrinter(printer, categories);
     }
 
 	/*

@@ -95,6 +95,10 @@ public class GRTemplate {
     protected void get(List<GR> grs, String format, Sentence sent, SuperCategory sc,
                        FilledDependency dep, FilledDependency other, FilledDependency constraint) {
         throw new UnsupportedOperationException("Not implemented yet");
+
+
+
+
     }
 
     public void setCat(Categories cats) {

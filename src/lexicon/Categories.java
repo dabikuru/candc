@@ -46,6 +46,11 @@ public class Categories {
 
     // ALT_MARKEDUP signals to use the alternative lines in the
     // markedup file (marked ! in the file)
+
+    /**
+     * @param grammarDir
+     * @param ALT_MARKEDUP signals to use the alternative lines in the markedup file (marked ! in the file)
+     */
     public Categories(String grammarDir, boolean ALT_MARKEDUP) {
         dependencyRelations = new Relations();
         grConstraints = new GRConstraints();
@@ -101,8 +106,8 @@ public class Categories {
 
             Preface.readPreface(in);
 
-            String plainCatString = "";
-            String markedupCatString = "";
+            String plainCatString;
+            String markedupCatString;
             String chunk;
 
             // Parse all constraints
@@ -186,11 +191,9 @@ public class Categories {
                         markedupCategories.put(plainCatString, cat);
 
                     } else {
-                        // Read in GR rule
-                        // C++: relations.add_gr(*this, markedup_str, slot, gr);
+                        // Read GR rule
                         short slot = Short.parseShort(tokens[0]);
-                        dependencyRelations.addGR(this, markedupCatString, slot,
-                                String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length))); //FIXME: better way?
+                        dependencyRelations.addGR(this, markedupCatString, slot, lines[i]); //TODO: test?
                     }
                 }
             }

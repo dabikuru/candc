@@ -5,6 +5,7 @@ import cat_combination.SuperCategory;
 import chart_parser.Chart;
 import gr.GR;
 import io.Sentence;
+import lexicon.Categories;
 import lexicon.Relations;
 
 import java.io.PrintWriter;
@@ -14,6 +15,10 @@ class GRsPrinter extends Printer {
 
     public ArrayList<FilledDependency> filledDependencies;
     public ArrayList<GR> GRs;
+
+    GRsPrinter(Categories cats) {
+        super(cats);
+    }
 
     protected void unary(Sentence sent) {}
 
