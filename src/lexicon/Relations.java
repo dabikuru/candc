@@ -87,8 +87,6 @@ public class Relations {
      * @param fmt  Body of the GR rule, e.g. "  2 nsubj %l %f"
      */
     void addGR(Categories cats, String cat, short slot, String fmt) {
-        //TODO: test
-
         Relation relEntry = getRelation(getRelID(cat, slot));
         if (relEntry == null)
             throw new Error(
@@ -96,5 +94,12 @@ public class Relations {
 
         GRTemplate gr = new GRTemplate(cats, cat, slot, fmt);
         relEntry.grs.add(gr);
+    }
+
+    public void setContraints(Categories categories) {
+        for (Relation entry : relations) {
+            entry.setConstraints(categories);
+        }
+
     }
 }

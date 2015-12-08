@@ -1,5 +1,6 @@
 package lexicon;
 
+import com.sun.istack.internal.Nullable;
 import gr.GRConstraints;
 import io.Preface;
 import utils.ByteWrapper;
@@ -72,14 +73,29 @@ public class Categories {
         readTRcategories(grammarDir + "/trVP_to", trVP_TOs);
     }
 
+    /**
+     * @param plainCategoryString The plain category string
+     * @return The marked-up category string
+     */
+    @Nullable
     public String getString(String plainCategoryString) {
         return markedupStrings.get(plainCategoryString);
     }
 
+    /**
+     * @param markedupString The marked-up category string
+     * @return The plain category string
+     */
+    @Nullable
     public String getPlainString(String markedupString) {
         return plainCategoryStrings.get(markedupString);
     }
 
+    /**
+     * @param plainCategoryString The plain category string
+     * @return Corresponding Category object
+     */
+    @Nullable
     public Category getCategory(String plainCategoryString) {
         return markedupCategories.get(plainCategoryString);
     }
@@ -186,8 +202,7 @@ public class Categories {
                                 (byte) (0)));
 
                         markedupStrings.put(plainCatString, markedupCatString);
-                        plainCategoryStrings.put(markedupCatString,
-                                plainCatString);
+                        plainCategoryStrings.put(markedupCatString, plainCatString);
                         markedupCategories.put(plainCatString, cat);
 
                     } else {
@@ -200,6 +215,8 @@ public class Categories {
         } catch (IOException e) {
             System.err.println(e);
         }
+
+        dependencyRelations.setContraints(this);
     }
 
 

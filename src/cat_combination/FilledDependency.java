@@ -19,18 +19,14 @@ import java.io.PrintWriter;
  */
 
 public class FilledDependency implements Comparable<FilledDependency> {
-    //FIXME: ensure access changes are OK
-    final short relID;
-    public final short headIndex; // position of the "head" word in the sentence
+    public final short relID;
+    public final short headIndex;   // position of the "head" word in the sentence
     public final short fillerIndex; // position of the filler word in the sentence
-    final short unaryRuleID; // if dependency has been created thro' a unary
-    // rule
-    public final short conjFactor; // average divisor for multiple slot fillers
-    // in max-recall decoder
-    final short lrange; // if dependency has been created thro' the head-passing
-    // mechanism
+    public final short unaryRuleID; // if dependency has been created thro' a unary rule
+    public final short conjFactor;  // average divisor for multiple slot fillers in max-recall decoder
+    public final short lrange;      // if dependency has been created thro' the head-passing mechanism
 
-    public FilledDependency next; // the linked list
+    public FilledDependency next;   // the linked list
 
     public FilledDependency(short relID, short headIndex, short fillerIndex,
                             short unaryRuleID, short lrange) {

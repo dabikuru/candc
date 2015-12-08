@@ -92,17 +92,21 @@ public class GRTemplate {
         }
     }
 
-    protected void get(List<GR> grs, String format, Sentence sent, SuperCategory sc,
-                       FilledDependency dep, FilledDependency other, FilledDependency constraint) {
-        throw new UnsupportedOperationException("Not implemented yet");
 
-
-
-
-    }
-
+    /**
+     * Find and set the constraining Category for the rule
+     * @param cats Categories from markedup file
+     */
     public void setCat(Categories cats) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (tmpCat == null || tmpCat.isEmpty())
+            return;
+
+        conCat = cats.getCategory(tmpCat);
+        if (conCat == null)
+            throw new Error("constraint category " + tmpCat + " does not exist in markedup");
+
+        if (conRel != 0)
+            conRel = cats.dependencyRelations.getRelID(cats.getString(tmpCat), conRel);
     }
 
     /**
@@ -125,8 +129,30 @@ public class GRTemplate {
         return true;
     }
 
-    public void get(List<GR> grs, Sentence sent, SuperCategory sc,
-                    List<FilledDependency> seen, List<FilledDependency> filled) {
+    public void get(List<GR> grs,
+                    Sentence sent,
+                    SuperCategory sc,
+                    List<FilledDependency> seen,
+                    FilledDependency dep) {
+
+        if (ignore)
+            return;
+
+
+
+    }
+
+    protected void get(List<GR> grs,
+                       String format,
+                       Sentence sent,
+                       SuperCategory sc,
+                       FilledDependency dep,
+                       FilledDependency other,
+                       FilledDependency constraint) {
         throw new UnsupportedOperationException("Not implemented yet");
+
+
+
+
     }
 }

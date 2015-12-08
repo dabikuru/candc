@@ -1,15 +1,15 @@
 package cat_combination;
 
+import gr.GR;
+import gr.GRTemplate;
 import io.Sentence;
-import lexicon.Category;
-import lexicon.Relations;
-import lexicon.TypeRaisedCategory;
-import lexicon.VarID;
+import lexicon.*;
 import utils.Hash;
 import utils.IntWrapper;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * unfilledDeps is a linked list of Dependency objects, with each
@@ -164,7 +164,7 @@ public class SuperCategory implements Comparable<SuperCategory> {
 		/*
          * need to create new Variable objects based on the VarIDs present in
 		 * the new Category (Unify never sees the Variables, only VarIDs)
-		 * 
+		 *
 		 * note ignore i = 0, which corresponds to the "NONE" Variable
 		 */
         for (int i = 1; i < numVars; i++) {
@@ -694,6 +694,30 @@ public class SuperCategory implements Comparable<SuperCategory> {
     }
 
 
+    public void getGRs(List<GR> grs,
+                       Object markedup,
+                       Relations rels,
+                       List<FilledDependency> seen,
+                       Sentence sent) {
+        for (FilledDependency dep = filledDeps; dep != null; dep = dep.next) {
+            Relation rel = rels.getRelation(dep.relID);
+            for (GRTemplate gr: rel.grs) {
+                gr.get(grs, sent, this, seen, dep);
+            }
+            seen.add(dep);
+        }
+    }
+
+//    void
+//    SuperCat::get_grs(GRs &grs, const Markedup &markedup, const Relations &rels,
+//                      FilledDeps &seen, const Sentence &sent) const {
+//        for (const Filled *dep = filled; dep; dep = dep->next) {
+//            const Relation &rel = rels[dep->rel];
+//            if (rel.gr)
+//                rel.gr->get(grs, sent, this, seen, dep);
+//            seen.push_back(dep);
+//        }
+//    }
 
 
 

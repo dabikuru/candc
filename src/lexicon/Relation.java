@@ -35,4 +35,9 @@ public class Relation {
             System.out.print(category + " " + Short.toString(slot));
         }
     }
+
+    public void setConstraints(Categories categories) {
+        for (GRTemplate gr: grs)
+            gr.setCat(categories);
+    }
 }
