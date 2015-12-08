@@ -708,18 +708,6 @@ public class SuperCategory implements Comparable<SuperCategory> {
         }
     }
 
-//    void
-//    SuperCat::get_grs(GRs &grs, const Markedup &markedup, const Relations &rels,
-//                      FilledDeps &seen, const Sentence &sent) const {
-//        for (const Filled *dep = filled; dep; dep = dep->next) {
-//            const Relation &rel = rels[dep->rel];
-//            if (rel.gr)
-//                rel.gr->get(grs, sent, this, seen, dep);
-//            seen.push_back(dep);
-//        }
-//    }
-
-
 
     /*
      * these are the same flags from C&C (with LEX renamed UNARY_TC)
