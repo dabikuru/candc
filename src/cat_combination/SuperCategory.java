@@ -694,8 +694,10 @@ public class SuperCategory implements Comparable<SuperCategory> {
     }
 
 
+    /**
+     * Populate the list of GRs given the current sentence and derivation
+     */
     public void getGRs(List<GR> grs,
-                       Object markedup,
                        Relations rels,
                        List<FilledDependency> seen,
                        Sentence sent) {

@@ -2,6 +2,7 @@ package printer;
 
 import cat_combination.FilledDependency;
 import cat_combination.SuperCategory;
+import chart_parser.Cell;
 import chart_parser.Chart;
 import gr.GR;
 import io.Sentence;
@@ -20,28 +21,49 @@ class GRsPrinter extends Printer {
         super(cats);
     }
 
-    protected void unary(Sentence sent) {}
+    protected void unary(Sentence sent) {
+    }
 
-    public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {}
+    public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
+        double maxScore = Double.NEGATIVE_INFINITY;
+        SuperCategory maxRoot = null;
 
-    protected void getGRs(SuperCategory sc, Sentence sent) {
-        if (sc.leftChild != null) {
-            try {
-                getGRs(sc.leftChild.maxEquivSuperCat, sent);
+        Cell root = chart.root();
 
-                if (sc.rightChild != null) {
-                    getGRs(sc.rightChild.maxEquivSuperCat, sent);
-                }
-            } catch (NullPointerException e) {
-                System.err.print(e.getStackTrace());
+        // Find the root Category with the highest score
+        for (SuperCategory superCat : root.getSuperCategories()) {
+            double currentScore = superCat.score;
+            if (currentScore > maxScore) {
+                maxScore = currentScore;
+                maxRoot = superCat;
             }
-        } else {
-            //store the lexical categories for printing
-            sent.outputSupertags.add(sc.cat);
         }
 
-        //TODO: implement SuperCategory.getGRs
-//        sc.getGRs(GRs, cats.markedup, cats.relations, filled, sent);
+        // Get GRs from the dependencies stemming from the maximum-score root category
+        if (maxRoot != null) {
+            getGRs(maxRoot, sentence);
+        }
 
+        for (GR gr : GRs)
+            out.println(gr.toString());
+    }
+
+    /**
+     * Populate the list of GRs to print, given the sentence and a supercategory
+     */
+    protected void getGRs(SuperCategory sc, Sentence sent) {
+        if (sc.leftChild != null && sc.leftChild.maxEquivSuperCat != null) {
+            getGRs(sc.leftChild.maxEquivSuperCat, sent);
+
+            if (sc.rightChild != null && sc.rightChild.maxEquivSuperCat != null)
+                getGRs(sc.rightChild.maxEquivSuperCat, sent);
+
+        }
+
+        //Store the lexical categories for printing
+        if (sc.leftChild != null)
+            sent.outputSupertags.add(sc.cat);
+
+        sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
     }
 }

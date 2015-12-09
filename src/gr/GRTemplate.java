@@ -95,6 +95,7 @@ public class GRTemplate {
 
     /**
      * Find and set the constraining Category for the rule
+     *
      * @param cats Categories from markedup file
      */
     public void setCat(Categories cats) {
@@ -129,19 +130,97 @@ public class GRTemplate {
         return true;
     }
 
+    /**
+     * Identify GR constraints and find compatible GRs
+     * @param grs   List being populated
+     * @param sent  Current sentence
+     * @param sc    Current supercategory
+     * @param seen  List of seen dependencies
+     * @param dep   Current dependency
+     */
     public void get(List<GR> grs,
                     Sentence sent,
                     SuperCategory sc,
                     List<FilledDependency> seen,
                     FilledDependency dep) {
 
-        if (ignore)
+        if (!satisfy(sent, sc, dep) || ignore)
             return;
 
+        switch (dep.unaryRuleID) {
+            case 1:
+            case 11:
+                break;
+            case 3:
+            case 7:
+            case 12:
+                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                get(grs, "ncsubj %l %f _", sent, sc, dep, null, null);
+                return;
+            case 2:
+                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                get(grs, "ncsubj %l %f obj", sent, sc, dep, null, null);
+                return;
+            case 4:
+            case 5:
+            case 6:
+            case 8:
+            case 9:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 93:
+            case 94:
+            case 95:
+                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                return;
+            case 10:
+                get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
+                get(grs, "dobj %l %f", sent, sc, dep, null, null);
+                return;
+            case 20:
+                return;
+            case 21:
+            case 22:
+                get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
+                return;
+        }
 
+        if (otherRel != 0) {
+            if (conRel != 0) {
+                // otherRel && conRel
 
+                for (FilledDependency j : seen) {
+                    seen.stream()
+                            .filter(k ->
+                                    j.headIndex == dep.headIndex && j.relID == otherRel &&
+                                            k.headIndex == dep.fillerIndex && k.relID == conRel)
+                            .forEach(k -> get(grs, fmt, sent, sc, dep, j, k));
+                }
+            } else {
+                // otherRel && NOT conRel
+                seen.stream()
+                        .filter(j -> j.headIndex == dep.headIndex && j.relID == otherRel)
+                        .forEach(j -> get(grs, fmt, sent, sc, dep, j, null));
+            }
+        } else if (conRel != 0) {
+            // NOT otherRel && conRel
+            seen.stream()
+                    .filter(k -> k.headIndex == dep.fillerIndex && k.relID == conRel)
+                    .forEach(k -> get(grs, fmt, sent, sc, dep, null, k));
+        } else {
+            // NOT otherRel && NOT conRel
+            get(grs, fmt, sent, sc, dep, null, null);
+        }
     }
 
+    /**
+     * Add a GR to the list given compatible constraining dependencies
+     */
     protected void get(List<GR> grs,
                        String format,
                        Sentence sent,
@@ -149,10 +228,48 @@ public class GRTemplate {
                        FilledDependency dep,
                        FilledDependency other,
                        FilledDependency constraint) {
-        throw new UnsupportedOperationException("Not implemented yet");
 
+        GR result = new GR();
+        String argFmt;
 
+        String[] splitArgs = format.split("\\S+");
+        result.label = splitArgs[0];
 
+        for (int i = 1; i < splitArgs.length; i++) {
+            argFmt = splitArgs[i];
+            Argument arg = new Argument();
 
+            if (argFmt.charAt(0) == '%') {
+                switch (argFmt.charAt(1)) {
+                    case 'f':
+                        arg.raw = sent.words.get(dep.fillerIndex - 1);
+                        arg.pos = dep.fillerIndex - 1;
+                        break;
+                    case 'l':
+                        arg.raw = sent.words.get(dep.headIndex - 1);
+                        arg.pos = dep.headIndex - 1;
+                        break;
+                    case 'o':
+                        arg.raw = sent.words.get(other.fillerIndex - 1);
+                        arg.pos = other.fillerIndex - 1;
+                        break;
+                    case 'c':
+                        arg.raw = sent.words.get(constraint.fillerIndex - 1);
+                        arg.pos = constraint.fillerIndex - 1;
+                        break;
+                    case '%':
+                        arg.raw = argFmt.substring(1);
+                        arg.pos = -1;
+                        break;
+                    default:
+                        throw new Error("format string for GR " + format + " has unknown format after %");
+                }
+            } else {
+                arg.raw = argFmt;
+                arg.pos = -1;
+            }
+            result.arguments.add(arg);
+        }
+        grs.add(result);
     }
 }

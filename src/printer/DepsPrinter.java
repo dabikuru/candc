@@ -17,13 +17,13 @@ class DepsPrinter extends Printer {
         super(cats);
     }
 
-    //TODO: check this works
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
         double maxScore = Double.NEGATIVE_INFINITY;
         SuperCategory maxRoot = null;
 
         Cell root = chart.root();
 
+        // Find the root Category with the highest score
         for (SuperCategory superCat : root.getSuperCategories()) {
             double currentScore = superCat.score;
             if (currentScore > maxScore) {
@@ -32,6 +32,7 @@ class DepsPrinter extends Printer {
             }
         }
 
+        // Print the dependencies stemming from the maximum-score root category
         if (maxRoot != null) {
             printDeps(out, relations, sentence, maxRoot);
         }
