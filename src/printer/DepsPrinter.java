@@ -2,13 +2,14 @@ package printer;
 
 import cat_combination.FilledDependency;
 import cat_combination.SuperCategory;
-import chart_parser.Cell;
 import chart_parser.Chart;
 import io.Sentence;
 import lexicon.Categories;
 import lexicon.Relations;
 
 import java.io.PrintWriter;
+
+import static java.util.Comparator.comparing;
 
 class DepsPrinter extends Printer {
 
@@ -18,24 +19,11 @@ class DepsPrinter extends Printer {
     }
 
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
-        double maxScore = Double.NEGATIVE_INFINITY;
-        SuperCategory maxRoot = null;
-
-        Cell root = chart.root();
-
         // Find the root Category with the highest score
-        for (SuperCategory superCat : root.getSuperCategories()) {
-            double currentScore = superCat.score;
-            if (currentScore > maxScore) {
-                maxScore = currentScore;
-                maxRoot = superCat;
-            }
-        }
-
         // Print the dependencies stemming from the maximum-score root category
-        if (maxRoot != null) {
-            printDeps(out, relations, sentence, maxRoot);
-        }
+        chart.root().getSuperCategories().stream()
+                .max(comparing(sc -> sc.score))
+                .ifPresent(maxRoot -> printDeps(out, relations, sentence, maxRoot));
     }
 
     public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {

@@ -1,10 +1,10 @@
 package io;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-
 import lexicon.Category;
 import model.Lexicon;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class Sentence {
     public ArrayList<String> words;
@@ -16,12 +16,12 @@ public class Sentence {
     // stored before printing dependency structures
 
     public Sentence(int MAX_WORDS) {
-        words = new ArrayList<String>(MAX_WORDS);
-        postags = new ArrayList<String>(MAX_WORDS);
-        multiSupertags = new ArrayList<ArrayList<Supertag>>(MAX_WORDS);
-        wordIDs = new ArrayList<Integer>(MAX_WORDS);
-        postagIDs = new ArrayList<Integer>(MAX_WORDS);
-        outputSupertags = new ArrayList<Category>(MAX_WORDS);
+        words = new ArrayList<>(MAX_WORDS);
+        postags = new ArrayList<>(MAX_WORDS);
+        multiSupertags = new ArrayList<>(MAX_WORDS);
+        wordIDs = new ArrayList<>(MAX_WORDS);
+        postagIDs = new ArrayList<>(MAX_WORDS);
+        outputSupertags = new ArrayList<>(MAX_WORDS);
     }
 
     public void addWord(String word) {

@@ -2,7 +2,6 @@ package printer;
 
 import cat_combination.FilledDependency;
 import cat_combination.SuperCategory;
-import chart_parser.Cell;
 import chart_parser.Chart;
 import gr.GR;
 import io.Sentence;
@@ -10,12 +9,15 @@ import lexicon.Categories;
 import lexicon.Relations;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 class GRsPrinter extends Printer {
 
-    public ArrayList<FilledDependency> filledDependencies;
-    public ArrayList<GR> GRs;
+    public List<FilledDependency> filledDependencies = new LinkedList<>();  // "seen" dependencies
+    public List<GR> GRs = new LinkedList<>();                               // GRs to be printed
 
     GRsPrinter(Categories cats) {
         super(cats);
@@ -25,27 +27,13 @@ class GRsPrinter extends Printer {
     }
 
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
-        double maxScore = Double.NEGATIVE_INFINITY;
-        SuperCategory maxRoot = null;
+        // - Find the root Category with the highest score
+        // - Get GRs from the dependencies stemming from the maximum-score root category
+        chart.root().getSuperCategories().stream()
+                .max(comparing(sc -> sc.score))
+                .ifPresent(maxRoot -> getGRs(maxRoot, sentence));
 
-        Cell root = chart.root();
-
-        // Find the root Category with the highest score
-        for (SuperCategory superCat : root.getSuperCategories()) {
-            double currentScore = superCat.score;
-            if (currentScore > maxScore) {
-                maxScore = currentScore;
-                maxRoot = superCat;
-            }
-        }
-
-        // Get GRs from the dependencies stemming from the maximum-score root category
-        if (maxRoot != null) {
-            getGRs(maxRoot, sentence);
-        }
-
-        for (GR gr : GRs)
-            out.println(gr.toString());
+        GRs.forEach(out::println);
     }
 
     /**
@@ -62,7 +50,7 @@ class GRsPrinter extends Printer {
 
         //Store the lexical categories for printing
         if (sc.leftChild != null)
-            sent.outputSupertags.add(sc.cat);
+            sent.addOutputSupertag(sc.cat);
 
         sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
     }

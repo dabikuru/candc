@@ -125,7 +125,7 @@ public class GRTemplate {
         if (!constrained)
             return true;
 
-        // False is the categorial constraint is not satisfied
+        // False if the categorial constraint is not satisfied
         if (conCat != null && !sent.outputSupertags.get(filled.fillerIndex - 1).equals(conCat))
             return false;
 
@@ -198,7 +198,6 @@ public class GRTemplate {
         if (otherRel != 0) {
             if (conRel != 0) {
                 // otherRel && conRel
-
                 for (FilledDependency j : seen) {
                     seen.stream()
                             .filter(k ->
@@ -237,7 +236,11 @@ public class GRTemplate {
         GR result = new GR();
         String argFmt;
 
-        String[] splitArgs = format.split("\\S+");
+        String[] splitArgs = format.split("\\s+");
+
+        if (splitArgs.length < 1)
+            throw new Error("Bad format for GR args " + format);
+
         result.label = splitArgs[0];
 
         for (int i = 1; i < splitArgs.length; i++) {
