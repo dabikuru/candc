@@ -179,7 +179,7 @@ public class SuperCategory implements Comparable<SuperCategory> {
                     rightChild.vars[unification.old2[i]]);
         }
 
-        ArrayList<Dependency> newUnfilledDeps = new ArrayList<Dependency>();
+        ArrayList<Dependency> newUnfilledDeps = new ArrayList<>();
 
         for (Dependency dep = leftChild.unfilledDeps; dep != null; dep = dep.next) {
             byte var = unification.trans1[dep.var];
@@ -703,9 +703,13 @@ public class SuperCategory implements Comparable<SuperCategory> {
                        Sentence sent) {
         for (FilledDependency dep = filledDeps; dep != null; dep = dep.next) {
             Relation rel = rels.getRelation(dep.relID);
-            for (GRTemplate gr: rel.grs) {
-                gr.get(grs, sent, this, seen, dep);
-            }
+
+            final FilledDependency d = dep;
+            rel.grs.stream()
+                    .filter((GRTemplate gr) -> gr.ignore || gr.satisfy(sent, this, d))
+                    .findFirst()
+                    .ifPresent((GRTemplate gr) -> gr.get(grs, sent, this, seen, d));
+
             seen.add(dep);
         }
     }

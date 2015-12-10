@@ -12,21 +12,28 @@ import java.util.regex.Pattern;
 
 //TODO: implement methods
 public class GRTemplate {
-    protected String tmpCat; // temporary storage for the category constraint
-    public String markedup;
+    protected String tmpCat;        // temporary storage for the category constraint
+    public String markedup;         // line for markedup file
     public boolean ignore;
-    public String fmt;
+    public String fmt;              // GR instance
     public short otherRel;
 
-    public boolean constrained;     // are there any constraints on
+    public boolean constrained;     // are there any constraints?
     public GRConstraints groups;    // lexical constraint groups
-    public String conLex;          // lexical constraint label
-    public Category conCat;        // category constraint
-    public short conRel;           // relation that the category constraint applies to
-//    public GRTemplate next;      TODO: these should be in a linked list anyway
+    public String conLex;           // lexical constraint label
+    public Category conCat;         // category constraint
+    public short conRel;            // relation that the category constraint applies to
 
-    private static final Pattern grPattern = Pattern.compile("(?<fmt>[a-z]+(\\s(%[\\dflck]|_))*)(?<cons>(\\s=\\S+)*)");
-    private static final Pattern consPattern = Pattern.compile("=(\\S+)");
+    /*
+        (?<fmt>[a-z]+           ~ label
+        (\s(%[\dflck]|_))*)     ~ arguments
+        (?<cons>(\s+=\S+)*)     ~ constraints
+        (\s+#.+)*               ~ comments
+     */
+    private static final Pattern grPattern = Pattern.compile("(?<fmt>[a-z]+(\\s(%[\\dflck]|_))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
+    // =(\S+)                   ~ constraint
+    private static final Pattern consPattern =Pattern.compile("=(\\S+)");
+    // %[\dflck]                ~ GR argument
     private static final Pattern fmtPattern = Pattern.compile("%[\\dflck]");
 
 
@@ -99,12 +106,16 @@ public class GRTemplate {
      * @param cats Categories from markedup file
      */
     public void setCat(Categories cats) {
+        //FIXME
         if (tmpCat == null || tmpCat.isEmpty())
             return;
 
-        conCat = cats.getCategory(tmpCat);
-        if (conCat == null)
-            throw new Error("constraint category " + tmpCat + " does not exist in markedup");
+        String markedupCat = cats.getString(tmpCat);
+        conCat = cats.getCategory(markedupCat);
+        if (conCat == null) {
+//            cats.debug();
+            throw new Error("constraint category " + tmpCat + " does not exist in markedup" + cats);
+        }
 
         if (conRel != 0)
             conRel = cats.dependencyRelations.getRelID(cats.getString(tmpCat), conRel);
@@ -131,7 +142,7 @@ public class GRTemplate {
     }
 
     /**
-     * Identify GR constraints and find compatible GRs
+     * Identify GR constraints and find a compatible GR
      * @param grs   List being populated
      * @param sent  Current sentence
      * @param sc    Current supercategory
@@ -143,9 +154,6 @@ public class GRTemplate {
                     SuperCategory sc,
                     List<FilledDependency> seen,
                     FilledDependency dep) {
-
-        if (!satisfy(sent, sc, dep) || ignore)
-            return;
 
         switch (dep.unaryRuleID) {
             case 1:

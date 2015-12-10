@@ -97,9 +97,11 @@ public class Relations {
     }
 
     public void setContraints(Categories categories) {
-        for (Relation entry : relations) {
-            entry.setConstraints(categories);
-        }
-
+        relations.stream()
+                .skip(1)    // Skip the first dummy relation
+                .forEach(entry -> {
+                    System.out.println("entry = " + entry.category + " " + entry.slot);
+                    entry.setConstraints(categories);
+                });
     }
 }

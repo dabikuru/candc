@@ -37,7 +37,9 @@ public class Relation {
     }
 
     public void setConstraints(Categories categories) {
-        for (GRTemplate gr: grs)
-            gr.setCat(categories);
+        //TODO: check - set one GR or all?
+
+        if (grs.size() > 0)
+            grs.get(0).setCat(categories);
     }
 }

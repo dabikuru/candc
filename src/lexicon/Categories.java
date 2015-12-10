@@ -1,6 +1,5 @@
 package lexicon;
 
-import com.sun.istack.internal.Nullable;
 import gr.GRConstraints;
 import io.Preface;
 import utils.ByteWrapper;
@@ -49,8 +48,8 @@ public class Categories {
     // markedup file (marked ! in the file)
 
     /**
-     * @param grammarDir
-     * @param ALT_MARKEDUP signals to use the alternative lines in the markedup file (marked ! in the file)
+     * @param grammarDir    location of directory with grammar files (usually data/baseline_expts)
+     * @param ALT_MARKEDUP  signals to use the alternative lines in the markedup file (marked ! in the file)
      */
     public Categories(String grammarDir, boolean ALT_MARKEDUP) {
         dependencyRelations = new Relations();
@@ -77,7 +76,6 @@ public class Categories {
      * @param plainCategoryString The plain category string
      * @return The marked-up category string
      */
-    @Nullable
     public String getString(String plainCategoryString) {
         return markedupStrings.get(plainCategoryString);
     }
@@ -86,7 +84,6 @@ public class Categories {
      * @param markedupString The marked-up category string
      * @return The plain category string
      */
-    @Nullable
     public String getPlainString(String markedupString) {
         return plainCategoryStrings.get(markedupString);
     }
@@ -95,7 +92,6 @@ public class Categories {
      * @param plainCategoryString The plain category string
      * @return Corresponding Category object
      */
-    @Nullable
     public Category getCategory(String plainCategoryString) {
         return markedupCategories.get(plainCategoryString);
     }
@@ -103,8 +99,20 @@ public class Categories {
 
     private void readMarkedupFile(String grammarDir, boolean ALT_MARKEDUP) {
         Pattern constraintPattern, rulePattern;
-        constraintPattern = Pattern.compile("=\\w+ (\\S+ ?)+\\n", Pattern.MULTILINE);
-        rulePattern = Pattern.compile("\\S+ ?\\n(  \\d \\S+\\n)(  ! \\S+\\n)*(  \\d .+\\n)*", Pattern.MULTILINE);
+
+        /*
+         * =\w+                   ~ label
+         * ( \S+)+\n              ~ lexeme (+ newline)
+         */
+        constraintPattern = Pattern.compile("=\\w+( \\S+)+\\n", Pattern.MULTILINE);
+
+        /*
+         * \S+ ?\n                  ~ plain category
+         * (  \d \S+\n)             ~ markedup line (2 spaces)
+         * (  ! \S+\n)*             ~ optional ALT line
+         * (  \d .+\n|#.+\n)*       ~ GR line or comment
+         */
+        rulePattern = Pattern.compile("\\S+ ?\\n(  \\d \\S+\\n)(  ! \\S+\\n)*(  \\d .+\\n|#.+\\n)*", Pattern.MULTILINE);
 
         markedupStrings = new HashMap<>();
         plainCategoryStrings = new HashMap<>();
@@ -126,9 +134,11 @@ public class Categories {
             String markedupCatString;
             String chunk;
 
+            //FIXME: regex-based parse does not work
+
             // Parse all constraints
             while ((chunk = in.findWithinHorizon(constraintPattern, 0)) != null) {
-                //System.out.println("Contraints: " + chunk);
+//                System.err.println("Contraints: " + chunk);
 
                 String[] tokens = chunk.split("\\s");
                 if (tokens.length < 2) {
@@ -144,7 +154,7 @@ public class Categories {
 
             // Parse all markedup rule instances
             while ((chunk = in.findWithinHorizon(rulePattern, 0)) != null) {
-                //System.out.println("GR rule:\n" + chunk + "\n");
+//                System.err.println("GR rule:\n" + chunk + "\n");
 
                 String[] lines, tokens;
                 Category cat;
@@ -165,7 +175,6 @@ public class Categories {
                     throw new Error(
                             "error parsing markedup cat line in markedup");
                 }
-
                 markedupCatString = tokens[1];
                 cat = parse(markedupCatString);
 
@@ -181,6 +190,10 @@ public class Categories {
 
                 // 3rd+line: GR
                 for (int i = 2; i < lines.length; i++) {
+                    // Ignore comment lines
+                    if ('#' == lines[i].charAt(0))
+                        continue;
+
                     tokens = lines[i].trim().split("\\s+");
                     if (tokens.length < 2) {
                         throw new Error("error parsing gr cat line in markedup");
@@ -532,4 +545,8 @@ public class Categories {
         }
     }
 
+//    public void debug() {
+//        plainCategoryStrings.forEach((a, b) -> {System.err.println(a + ": " + b);});
+//        markedupCategories.forEach((a, b) -> {System.err.println(a + ": " + b);});
+//    }
 }
