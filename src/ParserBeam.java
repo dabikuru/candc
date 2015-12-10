@@ -119,7 +119,6 @@ public class ParserBeam {
                     boolean success = parser.root();
 
                     if (success) {
-//                        parser.printDeps(out, parser.categories.dependencyRelations, parser.sentence);
                         parser.printDerivation(out);
                         parser.sentence.printC_line(out);
                     } else {
