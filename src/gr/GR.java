@@ -1,14 +1,16 @@
 package gr;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class GR {
     public String label;
-    public List<Argument> arguments;
+    public List<Argument> arguments = new LinkedList<>();
+
 
     @Override
     public String toString() {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
 
         out.append("( ").append(label);
         for (Argument arg: arguments) {
