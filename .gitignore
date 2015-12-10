@@ -1,9 +1,9 @@
 bin/*
-data/*
+data*/*
 docs/*
 gc/*
 lib/*
-output/*
+output*/*
 scripts/*
 src/.git
 src/.gitignore
