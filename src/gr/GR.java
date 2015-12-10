@@ -12,7 +12,7 @@ public class GR {
     public String toString() {
         StringBuilder out = new StringBuilder();
 
-        out.append("( ").append(label);
+        out.append("(").append(label);
         for (Argument arg: arguments) {
             out.append(' ').append(arg.raw);
             if (arg.pos >= 0)
