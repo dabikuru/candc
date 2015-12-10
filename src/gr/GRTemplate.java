@@ -106,15 +106,12 @@ public class GRTemplate {
      * @param cats Categories from markedup file
      */
     public void setCat(Categories cats) {
-        //FIXME
         if (tmpCat == null || tmpCat.isEmpty())
             return;
 
-        String markedupCat = cats.getString(tmpCat);
-        conCat = cats.getCategory(markedupCat);
+        conCat = cats.getCategory(tmpCat);
         if (conCat == null) {
-//            cats.debug();
-            throw new Error("constraint category " + tmpCat + " does not exist in markedup" + cats);
+            throw new Error("constraint category " + tmpCat + " does not exist in markedup");
         }
 
         if (conRel != 0)
