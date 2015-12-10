@@ -9,7 +9,7 @@ STDOUT_LOG=$BASE_DIR/output/parser.beam.more.log
 FROM_SENT=1
 TO_SENT=2000
 
-PRINTER=deps
+PRINTER=grs
 
 sh ./compile
 java -classpath bin -Xms64g -Xmx64g ParserBeam $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT $PRINTER > $STDOUT_LOG
