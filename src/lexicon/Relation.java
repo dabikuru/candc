@@ -37,10 +37,7 @@ public class Relation {
     }
 
     public void setConstraints(Categories categories) {
-        //TODO: check - set one GR or all?
-
-
-        if (grs.size() > 0)
-            grs.get(0).setCat(categories);
+        //TODO: set all (not just first); check difference
+        grs.forEach(gr -> gr.setCat(categories));
     }
 }
