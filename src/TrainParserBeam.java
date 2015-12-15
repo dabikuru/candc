@@ -1,19 +1,13 @@
-import io.Preface;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import model.Lexicon;
-import utils.Benchmark;
 import cat_combination.RuleInstancesParams;
 import cat_combination.SuperCategory;
 import chart_parser.ChartTrainParserBeam;
 import chart_parser.OracleDecoder;
 import chart_parser.OracleDepsSumDecoder;
+import io.Preface;
+import model.Lexicon;
+import utils.Benchmark;
+
+import java.io.*;
 
 public class TrainParserBeam {
     public static void main(String[] args) {
@@ -75,7 +69,7 @@ public class TrainParserBeam {
             return;
         }
 
-        ChartTrainParserBeam parser = null;
+        ChartTrainParserBeam parser;
 
         try {
             long TS_PARSER_INIT = Benchmark.getTime();

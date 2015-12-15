@@ -19,8 +19,8 @@ public class ChartTrainParserBeam extends ChartParserBeam {
     protected double maxViolation;
 
     protected Pair<Integer, Integer> maxViolationCell;
-    protected ArrayList<Pair<Integer, Integer>> maxViolationCells = new ArrayList<Pair<Integer, Integer>>();
-    protected LinkedList<Pair<Pair<Integer, Integer>, Double>> violationCells = new LinkedList<Pair<Pair<Integer, Integer>, Double>>();
+    protected ArrayList<Pair<Integer, Integer>> maxViolationCells = new ArrayList<>();
+    protected LinkedList<Pair<Pair<Integer, Integer>, Double>> violationCells = new LinkedList<>();
 
     private Feature[] trainingFeatures;
     private BufferedReader goldDepsPerCell;
@@ -62,7 +62,7 @@ public class ChartTrainParserBeam extends ChartParserBeam {
 
         this.parallelUpdate = parallelUpdate;
         this.updateLogP = updateLogP;
-        this.oracleSupertags = new ArrayList<Category>();
+        this.oracleSupertags = new ArrayList<>();
     }
 
     /**

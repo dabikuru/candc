@@ -1,21 +1,16 @@
 package chart_parser;
 
+import cat_combination.*;
 import io.Sentence;
+import lexicon.Categories;
+import lexicon.Category;
+import lexicon.Relations;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import lexicon.Categories;
-import lexicon.Category;
-import lexicon.Relations;
-import cat_combination.FilledDependency;
-import cat_combination.IgnoreDepsEval;
-import cat_combination.RuleCategoryPair;
-import cat_combination.RuleInstances;
-import cat_combination.SuperCategory;
 
 public abstract class OracleDecoder {
     public HashSet<FilledDependency> goldDeps;
@@ -38,8 +33,8 @@ public abstract class OracleDecoder {
     private String relHeadFillerFile = "data/grammar/relsHeadsFillersNoEval.txt";
 
     public OracleDecoder(Categories categories, boolean extractRuleInstances) {
-        this.goldDeps = new HashSet<FilledDependency>();
-        this.parserDeps = new HashSet<FilledDependency>();
+        this.goldDeps = new HashSet<>();
+        this.parserDeps = new HashSet<>();
         this.rootCat = null;
         this.newRootCat = null;
         this.ignoreDeps = new IgnoreDepsEval(ruleIDsFile, relRuleIDsFile, relHeadFile, relHeadFillerFile, categories.dependencyRelations);

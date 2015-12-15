@@ -1,14 +1,13 @@
 package cat_combination;
 
 import io.Sentence;
+import lexicon.Relations;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import lexicon.Relations;
 
 /*
  * an object of this class is used by the max F-score oracle decoder;
@@ -35,10 +34,10 @@ public class IgnoreDepsEval {
 
     public IgnoreDepsEval(String ruleIDsFile, String relRuleIDsFile,
                           String relHeadFile, String relHeadFillerFile, Relations relations) {
-        ruleIDs = new HashSet<Short>();
-        relRuleIDs = new HashMap<Short, HashSet<Short>>();
-        unfilledDeps = new HashSet<DependencyStringWords>();
-        filledDeps = new HashSet<DependencyStringWords>();
+        ruleIDs = new HashSet<>();
+        relRuleIDs = new HashMap<>();
+        unfilledDeps = new HashSet<>();
+        filledDeps = new HashSet<>();
 
         try {
             BufferedReader ruleIDsBuffer = new BufferedReader(new FileReader(
@@ -58,7 +57,7 @@ public class IgnoreDepsEval {
             short ruleID;
             short relID;
             short jslot;
-            HashSet<Short> ruleIDsSet = null;
+            HashSet<Short> ruleIDsSet;
 
             // read ruleIDs
             while ((line = ruleIDsBuffer.readLine()) != null) {
@@ -84,12 +83,11 @@ public class IgnoreDepsEval {
 
                 relID = relations.getRelID_II(markedupCatString, jslot);
                 if (relID == 0) {
-                    throw new Error("can't find relID in the relations map! "
-                            + markedupCatString);
+                    throw new Error("can't find relID in the relations map! " + markedupCatString);
                 }
                 ruleIDsSet = relRuleIDs.get(relID);
                 if (ruleIDsSet == null) {
-                    ruleIDsSet = new HashSet<Short>();
+                    ruleIDsSet = new HashSet<>();
                     relRuleIDs.put(relID, ruleIDsSet);
                 }
                 ruleIDsSet.add(ruleID);

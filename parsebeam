@@ -12,7 +12,11 @@ TO_SENT=2000
 PRINTER=grs
 
 sh ./compile
-java -classpath bin -Xms64g -Xmx64g ParserBeam $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT $PRINTER > $STDOUT_LOG
+
+java -classpath bin ParserBeam $BASE_DIR/data/wsj00_old.stagged  $BASE_DIR/output/test_parser.beam.out $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT deps > $STDOUT_LOG
+
+
+# java -classpath bin -Xms64g -Xmx64g ParserBeam $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT grs > $STDOUT_LOG
 
 # experimental branch: ParserBeam, trove, koloboke
 #java -classpath bin:lib/trove-3.0.3.jar:lib/koloboke-api-jdk6-7-0.6.6.jar:lib/koloboke-impl-jdk6-7-0.6.6.jar -Xms64g -Xmx64g -verbose:gc -Xloggc:output/parser.beam.gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps ParserBeam $INPUT_FILE $OUTPUT_FILE $LOG_FILE $WEIGHTS_FILE $FROM_SENT $TO_SENT > $STDOUT_LOG
