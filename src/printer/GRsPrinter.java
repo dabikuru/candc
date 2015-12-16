@@ -26,6 +26,9 @@ class GRsPrinter extends Printer {
     protected void unary(Sentence sent) { }
 
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
+        filledDependencies.clear();
+        GRs.clear();
+
         // - Find the root Category with the highest score
         // - Get GRs from the dependencies stemming from the maximum-score root category
         chart.root().getSuperCategories().stream()

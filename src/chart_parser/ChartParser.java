@@ -1,7 +1,16 @@
 package chart_parser;
 
+import cat_combination.FilledDependency;
+import cat_combination.RuleInstancesParams;
+import cat_combination.Rules;
+import cat_combination.SuperCategory;
 import io.Sentence;
 import io.Supertag;
+import lexicon.Categories;
+import lexicon.Category;
+import model.Features;
+import model.Lexicon;
+import model.Weights;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,16 +18,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import lexicon.Categories;
-import lexicon.Category;
-import model.Features;
-import model.Lexicon;
-import model.Weights;
-import cat_combination.FilledDependency;
-import cat_combination.RuleInstancesParams;
-import cat_combination.Rules;
-import cat_combination.SuperCategory;
 
 public class ChartParser {
     public final int MAX_SUPERCATS;
@@ -38,6 +37,7 @@ public class ChartParser {
     public Sentence sentence;
     public ArrayList<SuperCategory> results;
     public ArrayList<Integer> featureIDs;
+
 
     private int printPipeLeafIndex;
 
@@ -66,8 +66,8 @@ public class ChartParser {
         this.features = (featuresFile != null ? new Features(featuresFile, categories, newFeatures) : null);
         this.weights = (weightsFile != null ? new Weights(weightsFile, features.numFeatures) : null);
         this.sentence = new Sentence(MAX_WORDS);
-        this.results = new ArrayList<SuperCategory>();
-        this.featureIDs = new ArrayList<Integer>();
+        this.results = new ArrayList<>();
+        this.featureIDs = new ArrayList<>();
 
         this.chart.setWeights(this.weights);
     }

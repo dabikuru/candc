@@ -44,7 +44,7 @@ public class ParserBeam {
         // the closer to zero the more aggressive the beam
 
         if (args.length < 7) {
-            System.err.println("ParserBeam requires 6 arguments: <inputFile> <outputFile> <logFile> <weightsFile> <fromSentence> <toSentence> <printer>");
+            System.err.println("ParserBeam requires 7 arguments: <inputFile> <outputFile> <logFile> <weightsFile> <fromSentence> <toSentence> <printer>");
             return;
         }
 
