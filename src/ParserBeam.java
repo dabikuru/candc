@@ -115,6 +115,8 @@ public class ParserBeam {
                     break;
                 }
 
+                System.out.println("Sentence words:\n\t" + parser.sentence.words);
+
                 if (!parser.maxWordsExceeded && !parser.maxSuperCatsExceeded) {
                     boolean success = parser.root();
 
