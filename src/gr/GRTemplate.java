@@ -30,7 +30,7 @@ public class GRTemplate {
         (?<cons>(\s+=\S+)*)         ~ constraints
         (\s+#.+)*                   ~ comments
      */
-    private static final Pattern grPattern = Pattern.compile("(?<fmt>\\w+(\\s(%[\\dflck]|_|\\w+))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
+    private static final Pattern grPattern = Pattern.compile("\\d (?<fmt>\\w+(\\s(%[\\dflck]|_|\\w+))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
     // =(\S+)                       ~ constraint
     private static final Pattern consPattern =Pattern.compile("=(\\S+)");
     // %[\dflck]                    ~ GR argument
@@ -47,7 +47,7 @@ public class GRTemplate {
         Matcher m = grPattern.matcher(markedup);
 
         if (!m.find())
-            throw new Error("Invalid format for GR rule");
+            throw new Error("Invalid format for GR rule: " + markedup);
         fmt = m.group("fmt");
 
         // Check for ignore
@@ -77,7 +77,7 @@ public class GRTemplate {
                     break;
             }
         }
-        fmt = fmt.replaceAll("\\d", "o").replace('k', 'c');
+        fmt = fmt.replaceAll("%\\d", "%o").replace('k', 'c');
 
 
         // Process constraints, if any
