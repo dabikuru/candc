@@ -247,34 +247,46 @@ public class GRTemplate {
             argFmt = splitArgs[i];
             Argument arg = new Argument();
 
-            if (argFmt.charAt(0) == '%') {
-                switch (argFmt.charAt(1)) {
-                    case 'f':
-                        arg.raw = sent.words.get(dep.fillerIndex - 1);
-                        arg.pos = dep.fillerIndex - 1;
-                        break;
-                    case 'l':
-                        arg.raw = sent.words.get(dep.headIndex - 1);
-                        arg.pos = dep.headIndex - 1;
-                        break;
-                    case 'o':
-                        arg.raw = sent.words.get(other.fillerIndex - 1);
-                        arg.pos = other.fillerIndex - 1;
-                        break;
-                    case 'c':
-                        arg.raw = sent.words.get(constraint.fillerIndex - 1);
-                        arg.pos = constraint.fillerIndex - 1;
-                        break;
-                    case '%':
-                        arg.raw = argFmt.substring(1);
-                        arg.pos = -1;
-                        break;
-                    default:
-                        throw new Error("format string for GR " + format + " has unknown format after %");
+            try {
+                if (argFmt.charAt(0) == '%') {
+                    switch (argFmt.charAt(1)) {
+                        case 'f':
+                            arg.raw = sent.words.get(dep.fillerIndex - 1);
+                            arg.pos = dep.fillerIndex - 1;
+                            break;
+                        case 'l':
+                            arg.raw = sent.words.get(dep.headIndex - 1);
+                            arg.pos = dep.headIndex - 1;
+                            break;
+                        case 'o':
+                            arg.raw = sent.words.get(other.fillerIndex - 1);
+                            arg.pos = other.fillerIndex - 1;
+                            break;
+                        case 'c':
+                            arg.raw = sent.words.get(constraint.fillerIndex - 1);
+                            arg.pos = constraint.fillerIndex - 1;
+                            break;
+                        case '%':
+                            arg.raw = argFmt.substring(1);
+                            arg.pos = -1;
+                            break;
+                        default:
+                            throw new Error("format string for GR " + format + " has unknown format after %");
+                    }
+                } else {
+                    arg.raw = argFmt;
+                    arg.pos = -1;
                 }
-            } else {
-                arg.raw = argFmt;
-                arg.pos = -1;
+
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println(e.getMessage());
+                System.err.println(sent.words);
+                if (dep != null) {
+                    System.err.printf("Dep filler %d - head %d\n", dep.fillerIndex, dep.headIndex);
+                }
+                if (other != null) {
+                    System.err.printf("Other filler %d - head %d\n", other.fillerIndex, other.headIndex);
+                }
             }
             if (arg.raw == null || arg.raw.isEmpty())
                 throw new Error("Null/empty argument for GR: " + format);
