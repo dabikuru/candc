@@ -66,7 +66,10 @@ public class Sentence {
 
         for (int i = 0; i < words.size(); i++) {
             out.print(" " + words.get(i) + "|" + postags.get(i) + "|");
-            outputSupertags.get(i).printNoOuterBrackets(out, true);
+            if (i < outputSupertags.size())
+                outputSupertags.get(i).printNoOuterBrackets(out, true);
+            else
+                throw new Error("Insufficient tags: " + outputSupertags);
         }
 
         out.println();

@@ -563,25 +563,6 @@ public class ChartParserBeam extends ChartParser {
         }
     }
 
-//TODO: delete if it's all fine
-//    public void printDeps(PrintWriter out, Relations relations, Sentence sentence) {
-//        double maxScore = Double.NEGATIVE_INFINITY;
-//        SuperCategory maxRoot = null;
-//
-//        Cell root = chart.root();
-//
-//        for (SuperCategory superCat : root.getSuperCategories()) {
-//            double currentScore = superCat.score;
-//            if (currentScore > maxScore) {
-//                maxScore = currentScore;
-//                maxRoot = superCat;
-//            }
-//        }
-//
-//        if (maxRoot != null) {
-//            printDeps(out, relations, sentence, maxRoot);
-//        }
-//    }
 
     //FIXME: duplicated code. Kept because it's called by trainer. Solutions?
     public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {

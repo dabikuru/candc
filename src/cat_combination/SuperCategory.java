@@ -1,7 +1,6 @@
 package cat_combination;
 
 import gr.GR;
-import gr.GRTemplate;
 import io.Sentence;
 import lexicon.*;
 import utils.Hash;
@@ -706,9 +705,9 @@ public class SuperCategory implements Comparable<SuperCategory> {
 
             final FilledDependency d = dep;
             rel.grs.stream()
-                    .filter((GRTemplate gr) -> gr.ignore || gr.satisfy(sent, this, d))
+                    .filter( gr -> !gr.ignore && gr.satisfy(sent, this, d))
                     .findFirst()
-                    .ifPresent((GRTemplate gr) -> gr.get(grs, sent, this, seen, d));
+                    .ifPresent( gr -> gr.get(grs, sent, this, seen, d));
 
             seen.add(dep);
         }

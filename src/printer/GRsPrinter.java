@@ -23,8 +23,7 @@ class GRsPrinter extends Printer {
         super(cats);
     }
 
-    protected void unary(Sentence sent) {
-    }
+    protected void unary(Sentence sent) { }
 
     public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
         // - Find the root Category with the highest score
@@ -40,17 +39,30 @@ class GRsPrinter extends Printer {
      * Populate the list of GRs to print, given the sentence and a supercategory
      */
     protected void getGRs(SuperCategory sc, Sentence sent) {
-        if (sc.leftChild != null && sc.leftChild.maxEquivSuperCat != null) {
-            getGRs(sc.leftChild.maxEquivSuperCat, sent);
+//        if (sc.leftChild != null && sc.leftChild.maxEquivSuperCat != null) {
+//            System.out.println("sc.leftChild.cat = " + sc.leftChild.cat);
+//            getGRs(sc.leftChild.maxEquivSuperCat, sent);
+//
+//            if (sc.rightChild != null && sc.rightChild.maxEquivSuperCat != null) {
+//                System.out.println("sc.rightChild.cat = " + sc.rightChild.cat);
+//                getGRs(sc.rightChild.maxEquivSuperCat, sent);
+//            }
+//        }
 
-            if (sc.rightChild != null && sc.rightChild.maxEquivSuperCat != null)
-                getGRs(sc.rightChild.maxEquivSuperCat, sent);
+        //FIXME: why does this work...?
+        if (sc.leftChild != null) {
+            getGRs(sc.leftChild, sent);
 
+            if (sc.rightChild != null) {
+                getGRs(sc.rightChild, sent);
+            }
         }
 
         //Store the lexical categories for printing
-        if (sc.leftChild != null)
+        if (sc.leftChild == null) {
             sent.addOutputSupertag(sc.cat);
+        }
+
 
         sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
     }

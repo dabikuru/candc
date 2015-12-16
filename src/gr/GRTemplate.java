@@ -25,15 +25,15 @@ public class GRTemplate {
     public short conRel;            // relation that the category constraint applies to
 
     /*
-        (?<fmt>[a-z]+           ~ label
-        (\s(%[\dflck]|_))*)     ~ arguments
-        (?<cons>(\s+=\S+)*)     ~ constraints
-        (\s+#.+)*               ~ comments
+        (?<fmt>\w+                  ~ label
+        (\s(%[\dflck]|_|\w+))*)     ~ arguments, e.g. ( %d | %1 | _ | poss )
+        (?<cons>(\s+=\S+)*)         ~ constraints
+        (\s+#.+)*                   ~ comments
      */
-    private static final Pattern grPattern = Pattern.compile("(?<fmt>[a-z]+(\\s(%[\\dflck]|_))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
-    // =(\S+)                   ~ constraint
+    private static final Pattern grPattern = Pattern.compile("(?<fmt>\\w+(\\s(%[\\dflck]|_|\\w+))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
+    // =(\S+)                       ~ constraint
     private static final Pattern consPattern =Pattern.compile("=(\\S+)");
-    // %[\dflck]                ~ GR argument
+    // %[\dflck]                    ~ GR argument
     private static final Pattern fmtPattern = Pattern.compile("%[\\dflck]");
 
 
@@ -130,7 +130,7 @@ public class GRTemplate {
             return false;
 
         // Check if lexical constraints are satisfied
-        if (!conLex.isEmpty()) {
+        if (conLex != null && !conLex.isEmpty()) {
             String word = sent.words.get(filled.headIndex - 1).toLowerCase();
             return groups.get(conLex, word);
         }
@@ -276,6 +276,8 @@ public class GRTemplate {
                 arg.raw = argFmt;
                 arg.pos = -1;
             }
+            if (arg.raw == null || arg.raw.isEmpty())
+                throw new Error("Null/empty argument for GR: " + format);
             result.arguments.add(arg);
         }
         grs.add(result);
