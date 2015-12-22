@@ -35,7 +35,6 @@ public class Relations {
         relIDsII = new HashMap<>();
         addRelation("", (short) (0), (short) (0));
         // first index of a relation needs to be 1
-        initConj();
     }
 
     public Relation getRelation(short relID) {
@@ -77,8 +76,9 @@ public class Relations {
         return relID;
     }
 
-    private void initConj() {
+    public void initConj(Categories cats) {
         conj1 = addRelation("conj", (short) (1), (short) (1));
+        addGR(cats, "conj", (short) (1), "conj %l %f");
     }
 
     /**

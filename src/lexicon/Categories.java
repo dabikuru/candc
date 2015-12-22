@@ -56,6 +56,8 @@ public class Categories {
         seenCategories = new HashMap<>();
         canonicalCats = new HashMap<>();
 
+        dependencyRelations.initConj(this);
+
         trNPs = new ArrayList<>();
         readTRcategories(grammarDir + "/trNP", trNPs);
 
