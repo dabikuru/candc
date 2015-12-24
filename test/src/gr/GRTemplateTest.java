@@ -5,7 +5,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
+
 
 public class GRTemplateTest {
 
@@ -42,13 +43,13 @@ public class GRTemplateTest {
 
         // Rule with Lex and Cat constraints, and %c
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 xcomp %f %l %c =be =PP/NP");
+                "  2 xcomp %f %l %c =be =PP/(S[adj]\\NP)");
 
         assertEquals("xcomp %f %l %c", t.fmt);
         assertFalse(t.ignore);
         assertTrue(t.constrained);
         assertEquals("=be", t.conLex);
-        assertEquals("PP/NP", t.tmpCat);
+        assertEquals("PP/(S[adj]\\NP)", t.tmpCat);
         assertEquals(1, t.conRel);
 
 
