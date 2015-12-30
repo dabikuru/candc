@@ -705,9 +705,10 @@ public class SuperCategory implements Comparable<SuperCategory> {
 
             final FilledDependency d = dep;
             rel.grs.stream()
-                    .filter( gr -> !gr.ignore && gr.satisfy(sent, this, d))
+                    .filter( gr -> gr.satisfy(sent, this, d) )  // Find first satisfiable template
                     .findFirst()
-                    .ifPresent( gr -> gr.get(grs, sent, this, seen, d));
+                    .filter(gr -> !gr.ignore)                   // If 'ignore', do nothing and stop
+                    .ifPresent( gr -> gr.get(grs, sent, this, seen, d) );
 
             seen.add(dep);
         }
