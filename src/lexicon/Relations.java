@@ -98,7 +98,6 @@ public class Relations {
 
     public void setContraints(Categories categories) {
         relations.stream()
-//                .skip(1)    //TODO(uncomment) Skip the first dummy relation
                 .forEach(entry -> entry.setConstraints(categories));
     }
 }
