@@ -100,10 +100,4 @@ public class GRTemplateTest {
     public void testSatisfy() throws Exception {
 
     }
-
-    @Ignore
-    @Test
-    public void testGet1() throws Exception {
-
-    }
 }

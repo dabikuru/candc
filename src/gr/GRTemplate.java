@@ -248,7 +248,6 @@ public class GRTemplate {
             argFmt = splitArgs[i];
             Argument arg = new Argument();
 
-
             if (argFmt.charAt(0) == '%') {
                 switch (argFmt.charAt(1)) {
                     case 'f':
@@ -278,7 +277,6 @@ public class GRTemplate {
                 arg.raw = argFmt;
                 arg.pos = -1;
             }
-
 
             if (arg.raw == null || arg.raw.isEmpty())
                 throw new Error("Null/empty argument for GR: " + format);
