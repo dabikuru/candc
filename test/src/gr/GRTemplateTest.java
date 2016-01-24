@@ -33,7 +33,7 @@ public class GRTemplateTest {
 
         // Rule with Cat constraint
         t = new GRTemplate(categories, "", (short) 0,
-                "  xcomp _ %l %f =PP/(S[adj]\\NP)");
+                "  2 xcomp _ %l %f =PP/(S[adj]\\NP)");
 
         assertEquals("xcomp _ %l %f", t.fmt);
         assertFalse(t.ignore);
@@ -53,6 +53,17 @@ public class GRTemplateTest {
         assertEquals(1, t.conRel);
 
 
+        // Rule with Cat constraints, and %k
+        t = new GRTemplate(categories, "", (short) 0,
+                "  2 xcomp %f %l %k =(S[to]\\NP)/(S[b]\\NP)");
+
+        assertEquals("xcomp %f %l %c", t.fmt);
+        assertFalse(t.ignore);
+        assertTrue(t.constrained);
+        assertEquals("(S[to]\\NP)/(S[b]\\NP)", t.tmpCat);
+        assertEquals(2, t.conRel);
+
+
         // Rule with ignore
         t = new GRTemplate(categories, "", (short) 0,
                 "  2 ignore");
@@ -64,7 +75,7 @@ public class GRTemplateTest {
 
         // Rule with numbered argument
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 ncmod _ %f %3");
+                "  2 ncmod _ %f %0"); // Using a positive number makes it fail
 
         assertEquals("Should have %o", "ncmod _ %f %o", t.fmt);
         assertFalse(t.ignore);
@@ -80,7 +91,7 @@ public class GRTemplateTest {
 
     @Ignore
     @Test
-    public void testSet_cat() throws Exception {
+    public void testSetCat() throws Exception {
 
     }
 
