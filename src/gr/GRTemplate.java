@@ -198,30 +198,56 @@ public class GRTemplate {
         }
 
         if (otherRel != 0) {
-            if (conRel != 0) {
-                // otherRel && conRel
-                for (FilledDependency j : seen) {
-                    seen.stream()
-                            .filter(k ->
-                                    j.headIndex == dep.headIndex && j.relID == otherRel &&
-                                            k.headIndex == dep.fillerIndex && k.relID == conRel)
-                            .forEach(k -> get(grs, fmt, sent, sc, dep, j, k));
-                }
-            } else {
-                // otherRel && NOT conRel
-                seen.stream()
-                        .filter(j -> j.headIndex == dep.headIndex && j.relID == otherRel)
-                        .forEach(j -> get(grs, fmt, sent, sc, dep, j, null));
-            }
+           if (conRel != 0) {
+               for (FilledDependency j : seen) {
+                   for (FilledDependency k : seen) {
+                       if (j.headIndex == dep.headIndex && j.relID == otherRel
+                               && k.headIndex == dep.fillerIndex && k.relID == conRel)
+                           get(grs, fmt, sent, sc, dep, j, k);
+                   }
+               }
+           } else {
+               for (FilledDependency j : seen) {
+                   if (j.headIndex == dep.headIndex && j.relID == otherRel)
+                       get(grs, fmt, sent, sc, dep, j, null);
+               }
+           }
         } else if (conRel != 0) {
-            // NOT otherRel && conRel
-            seen.stream()
-                    .filter(k -> k.headIndex == dep.fillerIndex && k.relID == conRel)
-                    .forEach(k -> get(grs, fmt, sent, sc, dep, null, k));
+            for (FilledDependency k :
+                    seen) {
+                if (k.headIndex == dep.fillerIndex && k.relID == conRel)
+                    get(grs, fmt, sent, sc, dep, null, k);
+            }
         } else {
-            // NOT otherRel && NOT conRel
             get(grs, fmt, sent, sc, dep, null, null);
         }
+
+
+//        if (otherRel != 0) {
+//            if (conRel != 0) {
+//                // otherRel && conRel
+//                for (FilledDependency j : seen) {
+//                    seen.stream()
+//                            .filter(k ->
+//                                    j.headIndex == dep.headIndex && j.relID == otherRel &&
+//                                            k.headIndex == dep.fillerIndex && k.relID == conRel)
+//                            .forEach(k -> get(grs, fmt, sent, sc, dep, j, k));
+//                }
+//            } else {
+//                // otherRel && NOT conRel
+//                seen.stream()
+//                        .filter(j -> j.headIndex == dep.headIndex && j.relID == otherRel)
+//                        .forEach(j -> get(grs, fmt, sent, sc, dep, j, null));
+//            }
+//        } else if (conRel != 0) {
+//            // NOT otherRel && conRel
+//            seen.stream()
+//                    .filter(k -> k.headIndex == dep.fillerIndex && k.relID == conRel)
+//                    .forEach(k -> get(grs, fmt, sent, sc, dep, null, k));
+//        } else {
+//            // NOT otherRel && NOT conRel
+//            get(grs, fmt, sent, sc, dep, null, null);
+//        }
     }
 
     /**
