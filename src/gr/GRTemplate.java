@@ -67,7 +67,7 @@ public class GRTemplate {
                 case '3':
                     short oslot = (short) Character.getNumericValue(c);
                     if (oslot == slot) throw new Error("GR should not use own slot as field specifier %" + c);
-                    otherRel = cats.dependencyRelations.getRelID(cat, slot);
+                    otherRel = cats.dependencyRelations.getRelID(cat, oslot);
                     break;
                 case 'c':
                     conRel = 1;
