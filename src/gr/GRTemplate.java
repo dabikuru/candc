@@ -155,6 +155,7 @@ public class GRTemplate {
 
         switch (dep.unaryRuleID) {
             case 1:
+                break;
             case 11:
                 break;
             case 3:
