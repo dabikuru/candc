@@ -61,10 +61,10 @@ class GRsPrinter extends Printer {
 //            }
 //        }
 //
-//        //Store the lexical categories for printing
-//        if (sc.leftChild == null) {
-//            sent.addOutputSupertag(sc.cat);
-//        }
+        //Store the lexical categories for printing
+        if (sc.leftChild == null) {
+            sent.addOutputSupertag(sc.cat);
+        }
 
 
         sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
