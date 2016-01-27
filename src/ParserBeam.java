@@ -22,7 +22,7 @@ public class ParserBeam {
         int MAX_WORDS = 150;
         int MAX_SUPERCATS = 500000;
 
-        boolean altMarkedup = false;
+        boolean altMarkedup = true;
         boolean eisnerNormalForm = true;
         boolean detailedOutput = false;
         boolean newFeatures = false;
