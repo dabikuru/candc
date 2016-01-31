@@ -105,14 +105,7 @@ class Parser {
 
                     if (success) {
                         viterbiDecoder.decode(parser.chart, parser.sentence);
-
-                        //FIXME: don't need "chart", but need decoder -- overload printDerivation
-//                        printer.printDerivation(out, viterbiDecoder.parserDeps, parser.sentence);
                         printer.printDerivation(out, parser.chart, viterbiDecoder.parserDeps, parser.sentence);
-
-//                        viterbiDecoder.print(out, parser.categories.dependencyRelations, parser.sentence);
-
-
                         parser.sentence.printC_line(out);
                     } else {
                         System.out.println("No root category.");
@@ -122,8 +115,6 @@ class Parser {
 
                 out.println();
             }
-        } catch (FileNotFoundException e) {
-            System.err.println(e);
         } catch (IOException e) {
             System.err.println(e);
         } finally {

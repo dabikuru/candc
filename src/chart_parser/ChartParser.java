@@ -255,7 +255,7 @@ public class ChartParser {
                     supertags.add(supertag);
                 }
 
-                if (stagsIn != null && seenGold == false) {
+                if (stagsIn != null && !seenGold) {
                     if (printDetailedOutput) {
                         System.out.println("Didn't find gold so adding: " + goldSupertagString);
                     }
@@ -329,7 +329,6 @@ public class ChartParser {
     }
 
     private void calcRootCanonical(SuperCategory superCat) {
-        // TODO reimplement as linked list
         for (SuperCategory equiv = superCat; equiv != null; equiv = equiv.next) {
             calcScore(equiv);
 
@@ -599,9 +598,4 @@ public class ChartParser {
             }
         }
     }
-
-    //TODO: remove (printing should be handled outside the class now)
-//    public void printDerivation(PrintWriter out) {
-//        printer.printDerivation(out, chart, sentence);
-//    }
 }

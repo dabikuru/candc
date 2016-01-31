@@ -1,20 +1,11 @@
-import io.Preface;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import model.Lexicon;
 import cat_combination.RuleInstancesParams;
 import cat_combination.SuperCategory;
-import chart_parser.CellTrainBeam;
-import chart_parser.ChartParser;
-import chart_parser.ChartTrainParserBeamDerivations;
-import chart_parser.OracleDecoder;
-import chart_parser.OracleFscoreDecoder;
+import chart_parser.*;
+import io.Preface;
+import model.Lexicon;
+import printer.DepsPrinter;
+
+import java.io.*;
 
 public class TrainParserBeamDerivations {
     public static void main(String[] args) {
@@ -129,6 +120,8 @@ public class TrainParserBeamDerivations {
                 goldDeps = new BufferedReader(new FileReader(goldDepsFile));
                 roots = new BufferedReader(new FileReader(rootCatsFile));
 
+                DepsPrinter printer = new DepsPrinter(parser.categories);
+
                 Preface.readPreface(in);
                 Preface.readPreface(in2);
                 Preface.readPreface(goldDeps);
@@ -159,7 +152,11 @@ public class TrainParserBeamDerivations {
 
                         if (best != null) {
                             System.out.println("best category deps: ");
-                            parser.printDeps(writer, parser.categories.dependencyRelations, parser.sentence, best);
+
+                            printer.printDeps(writer, parser.sentence, best);
+                            //TODO check it's fine to use printer instead
+                            //parser.printDeps(writer, parser.categories.dependencyRelations, parser.sentence, best);
+
                             writer.flush();
                             System.out.println();
                         } else {

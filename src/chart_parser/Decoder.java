@@ -81,11 +81,4 @@ public abstract class Decoder {
 
         getDeps(bestEquivSuperCat, sentence);
     }
-
-    //TODO: remove (printing should be handled outside the class now)
-//    public void print(PrintWriter out, Relations relations, Sentence sentence) {
-//
-//        for (FilledDependency parserDep : parserDeps)
-//            parserDep.printFullJslot(out, relations, sentence);
-//    }
 }

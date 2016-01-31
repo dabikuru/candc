@@ -5,6 +5,7 @@ import chart_parser.OracleDecoder;
 import chart_parser.OracleDepsSumDecoder;
 import io.Preface;
 import model.Lexicon;
+import printer.DepsPrinter;
 import utils.Benchmark;
 
 import java.io.*;
@@ -115,6 +116,8 @@ public class TrainParserBeam {
                 goldDepsPerCell = new BufferedReader(new FileReader(goldDepsFile + ".per_cell"));
                 roots = new BufferedReader(new FileReader(rootCatsFile));
 
+                DepsPrinter printer = new DepsPrinter(parser.categories);
+
                 Preface.readPreface(in);
                 Preface.readPreface(goldDeps);
                 Preface.readPreface(goldDepsPerCell);
@@ -140,7 +143,11 @@ public class TrainParserBeam {
 
                         if (best != null) {
                             System.out.println("best category deps: ");
-                            parser.printDeps(writer, parser.categories.dependencyRelations, parser.sentence, best);
+
+                            printer.printDeps(writer, parser.sentence, best);
+                            //TODO check it's fine to use printer instead
+                            //parser.printDeps(writer, parser.categories.dependencyRelations, parser.sentence, best);
+
                             writer.flush();
                             System.out.println();
                         } else {

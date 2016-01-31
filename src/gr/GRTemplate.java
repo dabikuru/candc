@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO: implement methods
 public class GRTemplate {
     protected String tmpCat;        // temporary storage for the category constraint
     public String markedup;         // line for markedup file

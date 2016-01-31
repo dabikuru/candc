@@ -125,10 +125,7 @@ public class ParserBeam {
                     boolean success = parser.root();
 
                     if (success) {
-                        //FIXME: remove Printer from inside Parser
-//                        printer.printDerivation(out, parser.chart, parser.sentence);
                         printer.printDerivation(out, parser.chart, null, parser.sentence);
-//                        parser.printDerivation(out);
                         parser.sentence.printC_line(out);
                     } else {
                         System.out.println("No root category.");
