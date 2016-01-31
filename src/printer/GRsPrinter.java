@@ -6,6 +6,7 @@ import chart_parser.Chart;
 import gr.GR;
 import io.Sentence;
 import lexicon.Categories;
+import lexicon.DependencyType;
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -19,8 +20,17 @@ public class GRsPrinter extends Printer {
     public List<FilledDependency> filledDependencies = new LinkedList<>();  // "seen" dependencies
     public List<GR> GRs = new LinkedList<>();                               // GRs to be printed
 
-    public GRsPrinter(Categories cats) {
+    public DependencyType dependencyType;
+
+    public GRsPrinter(Categories cats, DependencyType dependencyType) {
         super(cats);
+
+        // Ensure the output flag matches the given markedup file
+        DependencyType markedupParameter = cats.getDependencyType();
+        if (dependencyType == markedupParameter)
+            this.dependencyType = dependencyType;
+        else
+            throw new Error("Output type (" + dependencyType + ") and markedup (" + markedupParameter + ") mismatch");
     }
 
     public void printDerivation(PrintWriter out, Chart chart, Set<FilledDependency> deps, Sentence sentence) {

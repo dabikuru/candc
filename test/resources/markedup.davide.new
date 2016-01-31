@@ -51,6 +51,8 @@
 # because this version of the markedup file was used to get the CL-paper results and
 # we'd like this to serve as part of the record of those results.
 
+<DEPENDENCY_TYPE=grs>
+
 # lexical constraint groups
 =be ai am are be been being is was were 's 'm 're
 =aux ai am are be been being is was were 's 'm 're

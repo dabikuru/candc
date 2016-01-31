@@ -1,19 +1,18 @@
 package chart_parser;
 
+import cat_combination.FilledDependency;
+import cat_combination.SuperCategory;
 import io.Sentence;
+import lexicon.Relations;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
-
-import lexicon.Relations;
-import cat_combination.FilledDependency;
-import cat_combination.SuperCategory;
 
 public class DepsDecoder extends Decoder {
     InsideOutside insideOutside;
 
     public DepsDecoder() {
-        parserDeps = new HashSet<FilledDependency>();
+        parserDeps = new HashSet<>();
         insideOutside = new InsideOutside();
     }
 

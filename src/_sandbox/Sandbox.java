@@ -1,13 +1,11 @@
 package _sandbox;
 
-import java.util.Arrays;
-
 public class Sandbox {
 
     public static void main(String[] args) {
-        String s = "  2 ((S[to]{_}\\NP{Z}<1>){_}/(S[b]{Y}<2>\\NP{Z*}){Y}){_}";
-        String[] tokens = (s.trim()).split("\\s+");
+        String depTypeFlag = "<DEPENDENCY_TYPE=grs>";
 
-        System.out.println("tokens = " + Arrays.toString(tokens));
+        depTypeFlag = depTypeFlag.replaceFirst("<DEPENDENCY_TYPE=(\\w+)>", "$1");
+        System.out.println("depTypeFlag = " + depTypeFlag);
     }
 }

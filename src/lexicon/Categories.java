@@ -13,6 +13,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Categories {
+    // indicate whether the markedup file maps to GRs or USDs
+    private DependencyType dependencyType;
+
     // map from the plain category string to the markedup string:
     private HashMap<String, String> markedupStrings;
 
@@ -95,6 +98,10 @@ public class Categories {
         return markedupCategories.get(plainCategoryString);
     }
 
+    public DependencyType getDependencyType() {
+        return dependencyType;
+    }
+
 
     private enum States {
         CAT, MARKEDUP, GRS
@@ -114,6 +121,25 @@ public class Categories {
         try {
             BufferedReader in = new BufferedReader(new FileReader(markedupFile));
             Preface.readPreface(in);
+
+            String depTypeFlag = in.readLine();
+            if (depTypeFlag.startsWith("<DEPENDENCY_TYPE=")) {
+                depTypeFlag = depTypeFlag.replaceFirst("<DEPENDENCY_TYPE=(\\w+)>", "$1");
+
+                switch (depTypeFlag) {
+                    case "usd":
+                        this.dependencyType = DependencyType.USD;
+                        break;
+                    case "grs":
+                        this.dependencyType = DependencyType.GR;
+                        break;
+                    default:
+                        throw new Error("Invalid dependency type in markedup: " + depTypeFlag);
+                }
+            } else {
+                // If no flag is specified, assume GR for backward compatibility
+                this.dependencyType = DependencyType.GR;
+            }
 
             States state = States.CAT;
 
