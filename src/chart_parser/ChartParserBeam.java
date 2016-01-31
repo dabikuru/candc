@@ -8,8 +8,6 @@ import lexicon.Relations;
 import model.Features;
 import model.Lexicon;
 import model.Weights;
-import printer.Printer;
-import printer.PrinterFactory;
 import utils.Pair;
 
 import java.io.BufferedReader;
@@ -21,8 +19,6 @@ public class ChartParserBeam extends ChartParser {
     private boolean cubePruning;
     private int beamSize;
     private double beta;
-
-    private Printer printer;
 
     public ChartParserBeam(
             String grammarDir,
@@ -44,7 +40,7 @@ public class ChartParserBeam extends ChartParser {
 
         super(grammarDir, altMarkedup, eisnerNormalForm, MAX_WORDS,
                 MAX_SUPERCATS, output, false, false, ruleInstancesParams,
-                lexicon, null, null, newFeatures);
+                lexicon, null, null, newFeatures, printer);
 
         if (compactWeights) {
             this.weights = new Weights();
@@ -61,8 +57,6 @@ public class ChartParserBeam extends ChartParser {
 
         this.beamSize = beamSize;
         this.beta = beta;
-
-        this.printer = PrinterFactory.getPrinter(printer, categories);
     }
 
 	/*
@@ -581,8 +575,5 @@ public class ChartParserBeam extends ChartParser {
         }
     }
 
-    public void printDerivation(PrintWriter out) {
-//        printDeps(out, categories.dependencyRelations, sentence);
-        printer.printDerivation(out, chart, categories.dependencyRelations, sentence);
-    }
+    //TODO: note – printDerivation moved up to ChartParser
 }

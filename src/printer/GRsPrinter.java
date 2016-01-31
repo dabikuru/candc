@@ -52,7 +52,7 @@ class GRsPrinter extends Printer {
 //            }
 //        }
 
-        //FIXME: why does this work...?
+        //FIXME: unify for Parser and ParserBeam
         if (sc.leftChild != null) {
             getGRs(sc.leftChild, sent);
 

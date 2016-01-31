@@ -1,14 +1,12 @@
 package chart_parser;
 
+import cat_combination.FilledDependency;
+import cat_combination.SuperCategory;
 import io.Sentence;
+import lexicon.Relations;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
-import java.util.Iterator;
-
-import lexicon.Relations;
-import cat_combination.FilledDependency;
-import cat_combination.SuperCategory;
 
 public abstract class Decoder {
     HashSet<FilledDependency> parserDeps;
@@ -55,7 +53,7 @@ public abstract class Decoder {
     protected void getDeps(SuperCategory superCat, Sentence sentence) {
         if (superCat.leftChild != null) {
             /*
-			 * System.out.println("left: "); superCat.leftChild.cat.print();
+             * System.out.println("left: "); superCat.leftChild.cat.print();
 			 * System.out.println();
 			 */
             getEquivDeps(superCat.leftChild, sentence);
@@ -87,11 +85,8 @@ public abstract class Decoder {
     }
 
     public void print(PrintWriter out, Relations relations, Sentence sentence) {
-        Iterator<FilledDependency> iterator = parserDeps.iterator();
 
-        while (iterator.hasNext()) {
-            FilledDependency parserDep = iterator.next();
+        for (FilledDependency parserDep : parserDeps)
             parserDep.printFullJslot(out, relations, sentence);
-        }
     }
 }

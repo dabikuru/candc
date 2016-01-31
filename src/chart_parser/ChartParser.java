@@ -11,6 +11,8 @@ import lexicon.Category;
 import model.Features;
 import model.Lexicon;
 import model.Weights;
+import printer.Printer;
+import printer.PrinterFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class ChartParser {
     public ArrayList<SuperCategory> results;
     public ArrayList<Integer> featureIDs;
 
+    protected Printer printer;
+
 
     private int printPipeLeafIndex;
 
@@ -54,7 +58,8 @@ public class ChartParser {
             Lexicon lexicon,
             String featuresFile,
             String weightsFile,
-            boolean newFeatures) throws IOException {
+            boolean newFeatures,
+            String printer) throws IOException {
         this.MAX_SUPERCATS = MAX_SUPERCATS;
         this.printDetailedOutput = output;
         this.oracleFscore = oracleFscore;
@@ -68,6 +73,8 @@ public class ChartParser {
         this.sentence = new Sentence(MAX_WORDS);
         this.results = new ArrayList<>();
         this.featureIDs = new ArrayList<>();
+
+        this.printer = PrinterFactory.getPrinter(printer, categories);
 
         this.chart.setWeights(this.weights);
     }
@@ -599,5 +606,9 @@ public class ChartParser {
                 }
             }
         }
+    }
+
+    public void printDerivation(PrintWriter out) {
+        printer.printDerivation(out, chart, categories.dependencyRelations, sentence);
     }
 }

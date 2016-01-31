@@ -1,17 +1,10 @@
-import io.Preface;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import model.Lexicon;
 import cat_combination.RuleInstancesParams;
 import chart_parser.ChartParser;
 import chart_parser.ViterbiDecoder;
+import io.Preface;
+import model.Lexicon;
+
+import java.io.*;
 
 class Parser {
     public static void main(String[] args) {
@@ -37,8 +30,8 @@ class Parser {
         // true indicates beta values get larger, and first value is betas[0];
         // false is the opposite, and first value is betas[2]
 
-        if (args.length < 6) {
-            System.err.println("Parser requires 6 arguments: <inputFile> <outputFile> <logFile> <weightsFile> <fromSentence> <toSentence>");
+        if (args.length < 7) {
+            System.err.println("Parser requires 7 arguments: <inputFile> <outputFile> <logFile> <weightsFile> <fromSentence> <toSentence> <printer>");
             return;
         }
 
@@ -48,6 +41,7 @@ class Parser {
         String weightsFile = args[3];
         String fromSent = args[4];
         String toSent = args[5];
+        String printer = args[6];
 
         int fromSentence = Integer.valueOf(fromSent);
         int toSentence = Integer.valueOf(toSent);
@@ -67,7 +61,7 @@ class Parser {
             parser = new ChartParser(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     oracleFscore, adaptiveSupertagging, ruleInstancesParams,
-                    lexicon, featuresFile, weightsFile, newFeatures);
+                    lexicon, featuresFile, weightsFile, newFeatures, printer);
         } catch (IOException e) {
             System.err.println(e);
             return;
@@ -107,6 +101,7 @@ class Parser {
                     if (success) {
                         viterbiDecoder.decode(parser.chart, parser.sentence);
                         viterbiDecoder.print(out, parser.categories.dependencyRelations, parser.sentence);
+
 
                         parser.sentence.printC_line(out);
                     } else {

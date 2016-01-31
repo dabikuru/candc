@@ -1,15 +1,13 @@
 package chart_parser;
 
+import cat_combination.SuperCategory;
 import io.Sentence;
 
 import java.util.HashSet;
 
-import cat_combination.FilledDependency;
-import cat_combination.SuperCategory;
-
 public class ViterbiDecoder extends Decoder {
     public ViterbiDecoder() {
-        parserDeps = new HashSet<FilledDependency>();
+        parserDeps = new HashSet<>();
     }
 
     /*
@@ -21,9 +19,7 @@ public class ViterbiDecoder extends Decoder {
     public boolean decode(Chart chart, Sentence sentence) {
         Cell root = chart.root();
 
-        for (SuperCategory superCat : root.getSuperCategories()) {
-            bestEquiv(superCat);
-        }
+        root.getSuperCategories().forEach(this::bestEquiv);
 
         return getParserDeps(chart, sentence);
     }
