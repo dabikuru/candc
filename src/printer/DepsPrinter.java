@@ -5,7 +5,6 @@ import cat_combination.SuperCategory;
 import chart_parser.Chart;
 import io.Sentence;
 import lexicon.Categories;
-import lexicon.Relations;
 
 import java.io.PrintWriter;
 
@@ -18,24 +17,24 @@ class DepsPrinter extends Printer {
         super(cats);
     }
 
-    public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
+    public void printDerivation(PrintWriter out, Chart chart, Sentence sentence) {
         // Find the root Category with the highest score
         // Print the dependencies stemming from the maximum-score root category
         chart.root().getSuperCategories().stream()
                 .max(comparing(sc -> sc.score))
-                .ifPresent(maxRoot -> printDeps(out, relations, sentence, maxRoot));
+                .ifPresent(maxRoot -> printDeps(out, sentence, maxRoot));
     }
 
-    public void printDeps(PrintWriter out, Relations relations, Sentence sentence, SuperCategory superCat) {
+    public void printDeps(PrintWriter out, Sentence sentence, SuperCategory superCat) {
         for (FilledDependency filled = superCat.filledDeps; filled != null; filled = filled.next) {
-            filled.printFullJslot(out, relations, sentence);
+            filled.printFullJslot(out, cats.dependencyRelations, sentence);
         }
 
         if (superCat.leftChild != null) {
-            printDeps(out, relations, sentence, superCat.leftChild);
+            printDeps(out, sentence, superCat.leftChild);
 
             if (superCat.rightChild != null) {
-                printDeps(out, relations, sentence, superCat.rightChild);
+                printDeps(out, sentence, superCat.rightChild);
             }
         } else {
             sentence.addOutputSupertag(superCat.cat);

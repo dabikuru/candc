@@ -2,6 +2,8 @@ import cat_combination.RuleInstancesParams;
 import chart_parser.ChartParserBeam;
 import io.Preface;
 import model.Lexicon;
+import printer.Printer;
+import printer.PrinterFactory;
 import utils.Benchmark;
 
 import java.io.*;
@@ -54,7 +56,7 @@ public class ParserBeam {
         String weightsFile = args[3];
         String fromSent = args[4];
         String toSent = args[5];
-        String printer = args[6];
+        String printerType = args[6];
 
         int fromSentence = Integer.valueOf(fromSent);
         int toSentence = Integer.valueOf(toSent);
@@ -80,7 +82,7 @@ public class ParserBeam {
             parser = new ChartParserBeam(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     ruleInstancesParams, lexicon, featuresFile, weightsFile,
-                    newFeatures, compactWeights, cubePruning, beamSize, beta, printer);
+                    newFeatures, compactWeights, cubePruning, beamSize, beta, printerType);
             long TE_PARSER_INIT = Benchmark.getTime();
             Benchmark.printTime("init parser", TS_PARSER_INIT, TE_PARSER_INIT);
         } catch (IOException e) {
@@ -104,6 +106,8 @@ public class ParserBeam {
             out.println("# mandatory preface");
             out.println();
 
+            Printer printer = PrinterFactory.getPrinter(printerType, parser.categories);
+
             long TS_PARSING = Benchmark.getTime();
             for (int numSentence = fromSentence; numSentence <= toSentence; numSentence++) {
                 System.out.println("Parsing sentence " + numSentence);
@@ -121,7 +125,9 @@ public class ParserBeam {
                     boolean success = parser.root();
 
                     if (success) {
-                        parser.printDerivation(out);
+                        //FIXME: remove Printer from inside Parser
+                        printer.printDerivation(out, parser.chart, parser.sentence);
+//                        parser.printDerivation(out);
                         parser.sentence.printC_line(out);
                     } else {
                         System.out.println("No root category.");

@@ -6,7 +6,6 @@ import chart_parser.Chart;
 import gr.GR;
 import io.Sentence;
 import lexicon.Categories;
-import lexicon.Relations;
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -25,7 +24,7 @@ class GRsPrinter extends Printer {
 
     protected void unary(Sentence sent) { }
 
-    public void printDerivation(PrintWriter out, Chart chart, Relations relations, Sentence sentence) {
+    public void printDerivation(PrintWriter out, Chart chart, Sentence sentence) {
         filledDependencies.clear();
         GRs.clear();
 

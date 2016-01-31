@@ -3,6 +3,8 @@ import chart_parser.ChartParser;
 import chart_parser.ViterbiDecoder;
 import io.Preface;
 import model.Lexicon;
+import printer.Printer;
+import printer.PrinterFactory;
 
 import java.io.*;
 
@@ -41,7 +43,7 @@ class Parser {
         String weightsFile = args[3];
         String fromSent = args[4];
         String toSent = args[5];
-        String printer = args[6];
+        String printerType = args[6];
 
         int fromSentence = Integer.valueOf(fromSent);
         int toSentence = Integer.valueOf(toSent);
@@ -61,7 +63,7 @@ class Parser {
             parser = new ChartParser(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     oracleFscore, adaptiveSupertagging, ruleInstancesParams,
-                    lexicon, featuresFile, weightsFile, newFeatures, printer);
+                    lexicon, featuresFile, weightsFile, newFeatures, printerType);
         } catch (IOException e) {
             System.err.println(e);
             return;
@@ -85,6 +87,9 @@ class Parser {
             out.println("# mandatory preface");
             out.println();
 
+            Printer printer = PrinterFactory.getPrinter(printerType, parser.categories);
+
+
             for (int numSentence = fromSentence; numSentence <= toSentence; numSentence++) {
                 System.out.println("Parsing sentence " + numSentence);
                 log.println("Parsing sentence " + numSentence);
@@ -100,6 +105,10 @@ class Parser {
 
                     if (success) {
                         viterbiDecoder.decode(parser.chart, parser.sentence);
+
+                        //FIXME: don't need "chart", but need decoder -- overload printDerivation
+                        printer.printDerivation(out, parser.chart, parser.sentence);
+
                         viterbiDecoder.print(out, parser.categories.dependencyRelations, parser.sentence);
 
 
