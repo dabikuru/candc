@@ -63,7 +63,7 @@ class Parser {
             parser = new ChartParser(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     oracleFscore, adaptiveSupertagging, ruleInstancesParams,
-                    lexicon, featuresFile, weightsFile, newFeatures, printerType);
+                    lexicon, featuresFile, weightsFile, newFeatures);
         } catch (IOException e) {
             System.err.println(e);
             return;
@@ -107,9 +107,10 @@ class Parser {
                         viterbiDecoder.decode(parser.chart, parser.sentence);
 
                         //FIXME: don't need "chart", but need decoder -- overload printDerivation
-                        printer.printDerivation(out, parser.chart, parser.sentence);
+//                        printer.printDerivation(out, viterbiDecoder.parserDeps, parser.sentence);
+                        printer.printDerivation(out, parser.chart, viterbiDecoder.parserDeps, parser.sentence);
 
-                        viterbiDecoder.print(out, parser.categories.dependencyRelations, parser.sentence);
+//                        viterbiDecoder.print(out, parser.categories.dependencyRelations, parser.sentence);
 
 
                         parser.sentence.printC_line(out);

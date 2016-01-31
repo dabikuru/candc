@@ -35,12 +35,11 @@ public class ChartParserBeam extends ChartParser {
             boolean compactWeights,
             boolean cubePruning,
             int beamSize,
-            double beta,
-            String printer) throws IOException {
+            double beta) throws IOException {
 
         super(grammarDir, altMarkedup, eisnerNormalForm, MAX_WORDS,
                 MAX_SUPERCATS, output, false, false, ruleInstancesParams,
-                lexicon, null, null, newFeatures, printer);
+                lexicon, null, null, newFeatures);
 
         if (compactWeights) {
             this.weights = new Weights();
@@ -551,9 +550,8 @@ public class ChartParserBeam extends ChartParser {
 
         features.collectLeafFeatures(superCat, sentence, featureIDs);
 
-        Iterator<Integer> it = featureIDs.iterator();
-        while (it.hasNext()) {
-            superCat.score += weights.getWeight(it.next());
+        for (Integer featureID : featureIDs) {
+            superCat.score += weights.getWeight(featureID);
         }
     }
 
@@ -574,6 +572,4 @@ public class ChartParserBeam extends ChartParser {
             sentence.addOutputSupertag(superCat.cat);
         }
     }
-
-    //TODO: note – printDerivation moved up to ChartParser
 }

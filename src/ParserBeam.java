@@ -82,7 +82,7 @@ public class ParserBeam {
             parser = new ChartParserBeam(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     ruleInstancesParams, lexicon, featuresFile, weightsFile,
-                    newFeatures, compactWeights, cubePruning, beamSize, beta, printerType);
+                    newFeatures, compactWeights, cubePruning, beamSize, beta);
             long TE_PARSER_INIT = Benchmark.getTime();
             Benchmark.printTime("init parser", TS_PARSER_INIT, TE_PARSER_INIT);
         } catch (IOException e) {
@@ -126,7 +126,8 @@ public class ParserBeam {
 
                     if (success) {
                         //FIXME: remove Printer from inside Parser
-                        printer.printDerivation(out, parser.chart, parser.sentence);
+//                        printer.printDerivation(out, parser.chart, parser.sentence);
+                        printer.printDerivation(out, parser.chart, null, parser.sentence);
 //                        parser.printDerivation(out);
                         parser.sentence.printC_line(out);
                     } else {

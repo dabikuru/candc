@@ -3,13 +3,11 @@ package chart_parser;
 import cat_combination.FilledDependency;
 import cat_combination.SuperCategory;
 import io.Sentence;
-import lexicon.Relations;
 
-import java.io.PrintWriter;
 import java.util.HashSet;
 
 public abstract class Decoder {
-    HashSet<FilledDependency> parserDeps;
+    public HashSet<FilledDependency> parserDeps;
 
     public int numParserDeps() {
         return parserDeps.size();
@@ -84,9 +82,10 @@ public abstract class Decoder {
         getDeps(bestEquivSuperCat, sentence);
     }
 
-    public void print(PrintWriter out, Relations relations, Sentence sentence) {
-
-        for (FilledDependency parserDep : parserDeps)
-            parserDep.printFullJslot(out, relations, sentence);
-    }
+    //TODO: remove (printing should be handled outside the class now)
+//    public void print(PrintWriter out, Relations relations, Sentence sentence) {
+//
+//        for (FilledDependency parserDep : parserDeps)
+//            parserDep.printFullJslot(out, relations, sentence);
+//    }
 }

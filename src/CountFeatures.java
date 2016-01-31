@@ -69,7 +69,7 @@ public class CountFeatures {
             parser = new ChartParserBeam(grammarDir, altMarkedup,
                     eisnerNormalForm, MAX_WORDS, MAX_SUPERCATS, detailedOutput,
                     ruleInstancesParams, lexicon, featuresFile, weightsFile,
-                    newFeatures, false, cubePruning, beamSize, beta, "deps");
+                    newFeatures, false, cubePruning, beamSize, beta);
         } catch (IOException e) {
             System.err.println(e);
             return;

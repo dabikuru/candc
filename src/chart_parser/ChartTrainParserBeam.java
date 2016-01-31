@@ -44,11 +44,10 @@ public class ChartTrainParserBeam extends ChartParserBeam {
             double beta,
             boolean parallelUpdate,
             boolean updateLogP) throws IOException {
-        //FIXME: clean constructor to handle Printer
         super(grammarDir, altMarkedup, eisnerNormalForm, MAX_WORDS,
                 MAX_SUPERCATS, output, ruleInstancesParams,
                 lexicon, featuresFile, weightsFile, newFeatures, false, cubePruning,
-                beamSize, beta, "deps");
+                beamSize, beta);
 
         this.chart = new Chart(MAX_WORDS, output, categories.dependencyRelations, false, true);
         this.chart.setWeights(this.weights);
