@@ -226,7 +226,7 @@ public class SuperCategory implements Comparable<SuperCategory> {
         if (numSuperCategories % 50000 == 0) {
             System.out.println("numSuperCategories: " + numSuperCategories);
         }
-		/*
+        /*
 		 * this gets used by the oracleFscore decoder to split equivalence
 		 * classes by the number of dependencies produced
 		 */
@@ -699,16 +699,17 @@ public class SuperCategory implements Comparable<SuperCategory> {
     public void getGRs(List<GR> grs,
                        Relations rels,
                        List<FilledDependency> seen,
-                       Sentence sent) {
+                       Sentence sent,
+                       DependencyType dependencyType) {
         for (FilledDependency dep = filledDeps; dep != null; dep = dep.next) {
             Relation rel = rels.getRelation(dep.relID);
 
             final FilledDependency d = dep;
             rel.grs.stream()
-                    .filter( gr -> gr.satisfy(sent, this, d) )  // Find first satisfiable template
+                    .filter(gr -> gr.satisfy(sent, this, d))  // Find first satisfiable template
                     .findFirst()
                     .filter(gr -> !gr.ignore)                   // If 'ignore', do nothing and stop
-                    .ifPresent( gr -> gr.get(grs, sent, this, seen, d) );
+                    .ifPresent(gr -> gr.get(grs, sent, this, seen, d, dependencyType));
 
             seen.add(dep);
         }

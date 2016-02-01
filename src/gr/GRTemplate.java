@@ -5,6 +5,7 @@ import cat_combination.SuperCategory;
 import io.Sentence;
 import lexicon.Categories;
 import lexicon.Category;
+import lexicon.DependencyType;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -140,60 +141,109 @@ public class GRTemplate {
     /**
      * Identify GR constraints and find a compatible GR
      *
-     * @param grs  List being populated
-     * @param sent Current sentence
-     * @param sc   Current supercategory
-     * @param seen List of seen dependencies
-     * @param dep  Current dependency
+     * @param grs            List being populated
+     * @param sent           Current sentence
+     * @param sc             Current supercategory
+     * @param seen           List of seen dependencies
+     * @param dep            Current dependency
+     * @param dependencyType
      */
     public void get(List<GR> grs,
                     Sentence sent,
                     SuperCategory sc,
                     List<FilledDependency> seen,
-                    FilledDependency dep) {
+                    FilledDependency dep, DependencyType dependencyType) {
 
-        switch (dep.unaryRuleID) {
-            case 1:
-                break;
-            case 11:
-                break;
-            case 3:
-            case 7:
-            case 12:
-                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
-                get(grs, "ncsubj %l %f _", sent, sc, dep, null, null);
-                return;
-            case 2:
-                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
-                get(grs, "ncsubj %l %f obj", sent, sc, dep, null, null);
-                return;
-            case 4:
-            case 5:
-            case 6:
-            case 8:
-            case 9:
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-            case 19:
-            case 93:
-            case 94:
-            case 95:
-                get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
-                return;
-            case 10:
-                get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
-                get(grs, "dobj %l %f", sent, sc, dep, null, null);
-                return;
-            case 20:
-                return;
-            case 21:
-            case 22:
-                get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
-                return;
+        if (dependencyType == DependencyType.GR) {
+            switch (dep.unaryRuleID) {
+                case 1:
+                case 11:
+                    break;
+                case 3:
+                case 7:
+                case 12:
+                    get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                    get(grs, "ncsubj %l %f _", sent, sc, dep, null, null);
+                    return;
+                case 2:
+                    get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                    get(grs, "ncsubj %l %f obj", sent, sc, dep, null, null);
+                    return;
+                case 4:
+                case 5:
+                case 6:
+                case 8:
+                case 9:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 93:
+                case 94:
+                case 95:
+                    get(grs, "xmod _ %f %l", sent, sc, dep, null, null);
+                    return;
+                case 10:
+                    get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
+                    get(grs, "dobj %l %f", sent, sc, dep, null, null);
+                    return;
+                case 20:
+                    return;
+                case 21:
+                case 22:
+                    get(grs, "cmod _ %f %l", sent, sc, dep, null, null);
+                    return;
+            }
+        } else if (dependencyType == DependencyType.USD) {
+        //TODO: check if these unary rules are correct
+            switch (dep.unaryRuleID) {
+                case 1:
+                    break;
+                case 11:
+                    break;
+                case 3:
+                case 7:
+                case 12:
+                    get(grs, "advcl %f %l", sent, sc, dep, null, null); // OR ACL?
+                    get(grs, "nsubj %l %f", sent, sc, dep, null, null);
+                    return;
+                case 2:
+                    get(grs, "acl %f %l", sent, sc, dep, null, null); // OR ADVCL?
+                    get(grs, "nsubjpass %l %f", sent, sc, dep, null, null); //
+                    return;
+                case 4:
+                case 5:
+                case 6:
+                case 8:
+                case 9:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 93:
+                case 94:
+                case 95:
+                    get(grs, "advcl %f %l", sent, sc, dep, null, null);
+                    return;
+                case 10:
+                    get(grs, "acl %f %l", sent, sc, dep, null, null); // OR ADVCL?
+                    get(grs, "dobj %l %f", sent, sc, dep, null, null);
+                    return;
+                case 20:
+                    return;
+                case 21:
+                case 22:
+                    get(grs, "advcl %f %l", sent, sc, dep, null, null); // OR ACL?
+                    return;
+            }
+        } else {
+            throw new Error("Invalid DependencyType passed: " + dependencyType);
         }
 
         if (otherRel != 0) {
@@ -202,7 +252,7 @@ public class GRTemplate {
                 for (FilledDependency j : seen) {
                     seen.stream()
                             .filter(k -> j.headIndex == dep.headIndex && j.relID == otherRel &&
-                                            k.headIndex == dep.fillerIndex && k.relID == conRel)
+                                    k.headIndex == dep.fillerIndex && k.relID == conRel)
                             .forEach(k -> get(grs, fmt, sent, sc, dep, j, k));
                 }
             } else {
@@ -222,9 +272,11 @@ public class GRTemplate {
         }
     }
 
+
     /**
      * Add a GR to the list given compatible constraining dependencies
      */
+
     protected void get(List<GR> grs,
                        String format,
                        Sentence sent,

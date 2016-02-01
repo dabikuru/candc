@@ -77,6 +77,7 @@ public class Relations {
     }
 
     public void initConj(Categories cats) {
+        //TODO: different for USD?
         conj1 = addRelation("conj", (short) (1), (short) (1));
         addGR(cats, "conj", (short) (1), "  1 conj %l %f");
     }

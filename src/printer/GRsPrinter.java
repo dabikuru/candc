@@ -68,7 +68,7 @@ public class GRsPrinter extends Printer {
             sent.addOutputSupertag(sc.cat);
         }
 
-        sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
+        sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent, dependencyType);
     }
 
     /**
@@ -89,6 +89,6 @@ public class GRsPrinter extends Printer {
             sent.addOutputSupertag(sc.cat);
         }
 
-        sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent);
+        sc.getGRs(GRs, cats.dependencyRelations, filledDependencies, sent, dependencyType);
     }
 }
