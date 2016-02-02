@@ -122,9 +122,10 @@ public class Categories {
             BufferedReader in = new BufferedReader(new FileReader(markedupFile));
             Preface.readPreface(in);
 
+            // Need to leave one empty line after the preface
             String depTypeFlag = in.readLine();
-            if (depTypeFlag.startsWith("<DEPENDENCY_TYPE=")) {
-                depTypeFlag = depTypeFlag.replaceFirst("<DEPENDENCY_TYPE=(\\w+)>", "$1");
+            if (depTypeFlag.startsWith("#<DEPENDENCY_TYPE=")) {
+                depTypeFlag = depTypeFlag.replaceFirst("#<DEPENDENCY_TYPE=(\\w+)>", "$1");
 
                 switch (depTypeFlag) {
                     case "usd":
