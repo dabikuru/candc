@@ -25,12 +25,12 @@ public class GRTemplate {
     public short conRel;            // relation that the category constraint applies to
 
     /*
-        (?<fmt>\w+                  ~ label
+        (?<fmt>\S+                  ~ label
         (\s(%[\dflck]|_|\w+))*)     ~ arguments, e.g. ( %d | %1 | _ | poss )
         (?<cons>(\s+=\S+)*)         ~ constraints
         (\s+#.+)*                   ~ comments
      */
-    private static final Pattern grPattern = Pattern.compile("\\d (?<fmt>\\w+(\\s(%[\\dflck]|_|\\w+))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
+    private static final Pattern grPattern = Pattern.compile("\\d (?<fmt>\\S+(\\s(%[\\dflck]|_|\\w+))*)(?<cons>(\\s+=\\S+)*)(\\s+#.+)*");
     // =(\S+)                       ~ constraint
     private static final Pattern consPattern = Pattern.compile("=(\\S+)");
     // %[\dflck]                    ~ GR argument
@@ -122,6 +122,9 @@ public class GRTemplate {
      * Check if all constraints are satisfied
      */
     public boolean satisfy(Sentence sent, SuperCategory sc, FilledDependency filled) {
+        System.out.println("markedup = " + markedup);
+        System.out.println("fmt = " + fmt);
+
         if (!constrained)
             return true;
 
@@ -132,6 +135,8 @@ public class GRTemplate {
         // Check if lexical constraints are satisfied
         if (conLex != null && !conLex.isEmpty()) {
             String word = sent.words.get(filled.headIndex - 1).toLowerCase();
+            System.out.println("word = " + word);
+            System.out.println("conLex = " + conLex);
             return groups.get(conLex, word);
         }
 
