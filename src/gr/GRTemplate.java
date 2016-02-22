@@ -122,9 +122,6 @@ public class GRTemplate {
      * Check if all constraints are satisfied
      */
     public boolean satisfy(Sentence sent, SuperCategory sc, FilledDependency filled) {
-        System.out.println("markedup = " + markedup);
-        System.out.println("fmt = " + fmt);
-
         if (!constrained)
             return true;
 
@@ -135,8 +132,6 @@ public class GRTemplate {
         // Check if lexical constraints are satisfied
         if (conLex != null && !conLex.isEmpty()) {
             String word = sent.words.get(filled.headIndex - 1).toLowerCase();
-            System.out.println("word = " + word);
-            System.out.println("conLex = " + conLex);
             return groups.get(conLex, word);
         }
 
