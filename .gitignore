@@ -20,7 +20,7 @@ src/.gitignore
 # parse
 # parsebeam
 # trainbeam
-
+upload/*
 .idea
 *.iml
 .DS_Store
