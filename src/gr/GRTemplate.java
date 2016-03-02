@@ -77,7 +77,7 @@ public class GRTemplate {
                     break;
             }
         }
-        fmt = fmt.replaceAll("%\\d", "%o").replace('k', 'c');
+        fmt = fmt.replaceAll("%\\d", "%o").replace("%k", "%c");
 
 
         // Process constraints, if any
