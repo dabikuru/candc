@@ -24,7 +24,7 @@ public class GRTemplateTest {
 
         // Rule with no constraints
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 xcomp _ %l %f");
+                "  2 xcomp _ %l %f #comment");
 
         assertEquals("xcomp _ %l %f", t.fmt);
         assertFalse(t.ignore);
@@ -33,7 +33,7 @@ public class GRTemplateTest {
 
         // Rule with Cat constraint
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 xcomp _ %l %f =PP/(S[adj]\\NP)");
+                "  2 xcomp _ %l %f =PP/(S[adj]\\NP) #comment");
 
         assertEquals("xcomp _ %l %f", t.fmt);
         assertFalse(t.ignore);
@@ -43,7 +43,7 @@ public class GRTemplateTest {
 
         // Rule with Lex and Cat constraints, and %c
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 xcomp %f %l %c =be =PP/(S[adj]\\NP)");
+                "  2 xcomp %f %l %c =be =PP/(S[adj]\\NP) #comment");
 
         assertEquals("xcomp %f %l %c", t.fmt);
         assertFalse(t.ignore);
@@ -55,7 +55,7 @@ public class GRTemplateTest {
 
         // Rule with Cat constraints, and %k
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 xcomp %f %l %k =(S[to]\\NP)/(S[b]\\NP)");
+                "  2 xcomp %f %l %k =(S[to]\\NP)/(S[b]\\NP) #comment");
 
         assertEquals("xcomp %f %l %c", t.fmt);
         assertFalse(t.ignore);
@@ -66,7 +66,7 @@ public class GRTemplateTest {
 
         // Rule with ignore
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 ignore");
+                "  2 ignore #comment");
 
         assertEquals("ignore", t.fmt);
         assertTrue(t.ignore);
@@ -75,12 +75,19 @@ public class GRTemplateTest {
 
         // Rule with numbered argument
         t = new GRTemplate(categories, "", (short) 0,
-                "  2 ncmod _ %f %0"); // Using a positive number makes it fail
+                "  2 ncmod _ %f %0 #comment"); // Using a positive number makes it fail
 
         assertEquals("Should have %o", "ncmod _ %f %o", t.fmt);
         assertFalse(t.ignore);
         assertFalse(t.constrained);
 
+
+        // Rule with POS constraints
+        t = new GRTemplate(categories, "", (short) 0,
+                "  2 amod %f %l ==JJ|JJR|JJS #comment");
+        assertEquals("amod %f %l", t.fmt);
+        assertTrue(t.constrained);
+        assertEquals("JJ|JJ|JJS", t.conPos);
     }
 
 

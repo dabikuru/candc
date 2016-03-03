@@ -7,6 +7,7 @@ import lexicon.Categories;
 import lexicon.Category;
 import lexicon.DependencyType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -24,6 +25,7 @@ public class GRTemplate {
     public String conLex;           // lexical constraint label
     public Category conCat;         // category constraint
     public short conRel;            // relation that the category constraint applies to
+    public String conPos;           // POS constraint
 
     /*
         (?<fmt>\S+                  ~ label
@@ -88,12 +90,16 @@ public class GRTemplate {
             while (constraintMacher.find()) {
                 String cons = constraintMacher.group();
                 if (Character.isLowerCase(cons.charAt(1))) {
-                    //Lexical constraint
-                    if (!(conLex == null)) throw new Error("lexical constraint has already been set for " + markedup);
+                    // Lexical constraint
+                    if (conLex != null) throw new Error("lexical constraint has already been set for " + markedup);
                     conLex = cons; // preserve '='
+                } else if ('=' == cons.charAt(1)) {
+                    // POS constraints
+                    if (conPos != null) throw new Error("POS constraint has already been set for " + markedup);
+                    conPos = cons.substring(2);
                 } else {
-                    //Categorial constraint
-                    if (!(tmpCat == null)) throw new Error("category constraint has already been set for " + markedup);
+                    // Categorial constraint
+                    if (tmpCat != null) throw new Error("category constraint has already been set for " + markedup);
                     tmpCat = cons.substring(1); // get rid of '='
                 }
             }
@@ -134,6 +140,13 @@ public class GRTemplate {
         if (conLex != null && !conLex.isEmpty()) {
             String word = sent.words.get(filled.headIndex - 1).toLowerCase();
             return groups.get(conLex, word);
+        }
+
+        // Check if POS constraints are satisfied
+        if (conPos != null && !conPos.isEmpty()) {
+            String[] POS = conPos.split("\\|");
+            String word_pos = sent.postags.get(filled.headIndex - 1);
+            return Arrays.asList(POS).contains(word_pos);
         }
 
         return true;
