@@ -3,7 +3,7 @@ package gr;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GR {
+public class GR implements Comparable<GR> {
     public String label;
     public List<Argument> arguments = new LinkedList<>();
 
@@ -21,6 +21,14 @@ public class GR {
         out.append(")");
 
         return out.toString();
+    }
+
+    @Override
+    public int compareTo(GR o) {
+        if (!this.arguments.isEmpty() && !o.arguments.isEmpty()) {
+            return this.arguments.get(0).pos - o.arguments.get(0).pos;
+        }
+        return 0;
     }
 }
 
