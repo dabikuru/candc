@@ -30,7 +30,7 @@ public class GR implements Comparable<GR> {
     @Override
     public int compareTo(GR o) {
         // Comparison for 2-argument dependencies
-        if (this.arguments.size() == 2 && this.arguments.size() == 2) {
+        if (this.arguments.size() == 2 && o.arguments.size() == 2) {
             // First compare the governing words
             int d1 = this.arguments.get(0).pos - o.arguments.get(0).pos;
             // If the words are equal (same position), compare the dependent words.
