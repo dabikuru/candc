@@ -8,6 +8,7 @@ import lexicon.Category;
 import lexicon.DependencyType;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -148,7 +149,7 @@ public class GRTemplate {
      * @param dep            Current dependency
      * @param dependencyType
      */
-    public void get(List<GR> grs,
+    public void get(Set<GR> grs,
                     Sentence sent,
                     SuperCategory sc,
                     List<FilledDependency> seen,
@@ -277,7 +278,7 @@ public class GRTemplate {
      * Add a GR to the list given compatible constraining dependencies
      */
 
-    protected void get(List<GR> grs,
+    protected void get(Set<GR> grs,
                        String format,
                        Sentence sent,
                        SuperCategory sc,

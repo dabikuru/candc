@@ -9,6 +9,7 @@ import lexicon.Categories;
 import lexicon.DependencyType;
 
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ import static java.util.Comparator.comparing;
 public class GRsPrinter extends Printer {
 
     public List<FilledDependency> filledDependencies = new LinkedList<>();  // "seen" dependencies
-    public List<GR> GRs = new LinkedList<>();                               // GRs to be printed
+    public Set<GR> GRs = new HashSet<>();                               // GRs to be printed
 
     public DependencyType dependencyType;
 

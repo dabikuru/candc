@@ -9,6 +9,7 @@ import utils.IntWrapper;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /*
  * unfilledDeps is a linked list of Dependency objects, with each
@@ -696,7 +697,7 @@ public class SuperCategory implements Comparable<SuperCategory> {
     /**
      * Populate the list of GRs given the current sentence and derivation
      */
-    public void getGRs(List<GR> grs,
+    public void getGRs(Set<GR> grs,
                        Relations rels,
                        List<FilledDependency> seen,
                        Sentence sent,
