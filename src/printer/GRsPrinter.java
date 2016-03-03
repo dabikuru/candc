@@ -16,7 +16,7 @@ import static java.util.Comparator.comparing;
 public class GRsPrinter extends Printer {
 
     public List<FilledDependency> filledDependencies = new LinkedList<>();  // "seen" dependencies
-    public Set<GR> GRs = new TreeSet<>();                               // GRs to be printed
+    public Set<GR> GRs = new HashSet<>();                               // GRs to be printed
 
     public DependencyType dependencyType;
 
